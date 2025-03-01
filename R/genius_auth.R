@@ -1,0 +1,73 @@
+# STAT2610SEF_Group_Project/R/genius_auth.R
+# Custom Genius API authentication function
+# STAT 2610SEF Course Project - Spring 2025
+
+#' Operator for providing default values for NULL
+#'
+#' @param x Value to check
+#' @param y Default value to use if x is NULL
+#' @return x if not NULL, otherwise y
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+#' Authenticate with Genius API using OAuth 2.0
+#'
+#' @param client_id Your Genius API Client ID
+#' @param client_secret Your Genius API Client Secret  
+#' @param redirect_uri The redirect URI (default: http://localhost:1410/)
+#' @return An OAuth token object
+#' @import httr
+genius_oauth <- function(client_id, client_secret, redirect_uri = "http://localhost:1410/") {
+    library(httr)
+    
+    # Genius OAuth endpoints
+    genius <- oauth_endpoint(
+        authorize = "https://api.genius.com/oauth/authorize",
+        access = "https://api.genius.com/oauth/token"
+    )
+    
+    # Create an OAuth application object
+    app <- oauth_app("genius", client_id, client_secret, redirect_uri = redirect_uri)
+    
+    # Get OAuth token
+    token <- oauth2.0_token(
+        endpoint = genius,
+        app = app,
+        scope = "me",
+        cache = TRUE
+    )
+    
+    return(token)
+}
+
+#' Make an authenticated request to Genius API
+#'
+#' @param endpoint API endpoint path (e.g., "songs/123")
+#' @param token OAuth token from genius_oauth()
+#' @param ... Additional parameters to pass to httr::GET
+#' @return Parsed JSON response
+#' @import httr jsonlite
+genius_get <- function(endpoint, token, ...) {
+    library(httr)
+    library(jsonlite)
+    
+    base_url <- "https://api.genius.com/"
+    
+    # Make request with proper authentication
+    response <- GET(
+        url = paste0(base_url, endpoint),
+        config = config(token = token),
+        ...
+    )
+    
+    # Check for errors
+    if (http_error(response)) {
+        stop(
+            "Genius API request failed [", status_code(response), "]\n", 
+            content(response, "text", encoding = "UTF-8")
+        )
+    }
+    
+    # Parse and return response
+    parsed <- fromJSON(content(response, "text", encoding = "UTF-8"))
+    return(parsed$response)
+}

@@ -1,0 +1,125 @@
+# STAT2610SEF_Group_Project/R/main.R
+# Main script for Music & Emotion Analysis project
+# STAT 2610SEF Course Project - Spring 2025
+
+# Load required libraries
+library(tidyverse)
+library(tidytext)
+library(tuber)        # For YouTube API
+library(rvest)        # For web scraping
+library(httr)         # For API requests
+library(jsonlite)     # For JSON parsing
+library(textdata)     # For sentiment lexicons
+library(sentimentr)   # For sentiment analysis
+library(wordcloud)    # For word clouds
+library(plotly)       # For interactive plots
+library(knitr)        # For report generation
+library(rmarkdown)    # For report generation
+library(dplyr)        # For data manipulation
+
+# Source project scripts
+source("R/00_config.R")
+source("R/01_setup.R")
+source("R/02_data_collection.R")
+source("R/03_text_processing.R")
+source("R/04_sentiment_analysis.R")
+source("R/05_visualization.R")
+
+# Step 0: Create necessary directories and check packages
+cat("Setting up project environment...\n")
+CreateDirectories()
+CheckAndInstallPackages()
+
+# Step 1: Read song list from CSV
+cat("Reading song data...\n")
+songData <- ReadSongList()
+
+# Step 2: Setup API authentication
+cat("Setting up API authentication...\n")
+apiTokens <- SetupAPITokens()
+
+# Step 3: Collect lyrics data
+if (!is.null(apiTokens$genius)) {
+    cat("Collecting lyrics data...\n")
+    lyricsData <- CollectLyrics(songData, apiTokens$genius)
+} else {
+    stop("Genius API authentication failed. Cannot collect lyrics.")
+}
+
+# Step 4: Collect YouTube comments (if available)
+if (apiTokens$youtube) {
+    cat("Collecting YouTube comments...\n")
+    commentsData <- CollectYouTubeComments(songData)
+} else {
+    warning("YouTube API authentication failed. Skipping comment collection.")
+    commentsData <- NULL
+}
+
+# Step 5: Process text data
+cat("Processing lyrics text...\n")
+stopwords <- GetStopwords()
+lyrics_tokens <- ProcessLyrics(lyricsData, stopwords)
+
+if (!is.null(commentsData) && nrow(commentsData) > 0) {
+    cat("Processing comments text...\n")
+    comment_tokens <- ProcessComments(commentsData, stopwords)
+} else {
+    comment_tokens <- NULL
+}
+
+# Step 6: Extract key words by genre
+cat("Calculating TF-IDF by genre...\n")
+genre_tf_idf <- CalculateGenreTFIDF(lyrics_tokens)
+
+# Step 7: Extract n-grams (optional)
+cat("Extracting bigrams from lyrics...\n")
+lyrics_bigrams <- ExtractNgrams(lyricsData, n = 2, stopwords)
+
+# Step 8: Perform sentiment analysis
+cat("Analyzing lyrics sentiment...\n")
+lyrics_sentiment <- AnalyzeLyricsSentiment(lyrics_tokens)
+
+if (!is.null(comment_tokens) && nrow(comment_tokens) > 0) {
+    cat("Analyzing comments sentiment...\n")
+    comments_sentiment <- AnalyzeCommentsSentiment(comment_tokens)
+} else {
+    comments_sentiment <- NULL
+}
+
+# Step 9: Compare sentiment across genres
+cat("Comparing sentiment across genres...\n")
+genre_sentiment <- CompareSentimentByGenre(lyrics_sentiment)
+
+# Step 10: Compare lyrics and comments sentiment
+if (!is.null(comments_sentiment)) {
+    cat("Comparing lyrics and comments sentiment...\n")
+    lyrics_comments_comparison <- CompareLyricsAndComments(lyrics_sentiment, comments_sentiment)
+} else {
+    lyrics_comments_comparison <- NULL
+}
+
+# Step 11: Generate visualizations
+cat("Generating visualizations...\n")
+
+# Word clouds by genre
+CreateGenreWordClouds(lyrics_tokens)
+
+# Sentiment distribution plots
+CreateSentimentPlots(lyrics_sentiment, "Lyrics")
+if (!is.null(comments_sentiment)) {
+    CreateSentimentPlots(comments_sentiment, "Comments")
+}
+
+# Genre comparison plots
+CreateGenreComparisonPlots(genre_sentiment)
+
+# Lyrics vs comments comparison
+if (!is.null(lyrics_comments_comparison)) {
+    CreateLyricsCommentsComparisonPlot(lyrics_comments_comparison)
+}
+
+# Step 12: Generate report
+cat("Generating final report...\n")
+GenerateReport()
+
+cat("Analysis complete!\n")
