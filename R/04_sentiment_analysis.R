@@ -278,7 +278,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
     # Aggregate by genre
     genre_sentiment <- song_sentiment %>%
         group_by(MajorityGenre) %>%
-        summarize(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))
+        summarize(across(where(is.numeric), mean, na.rm = TRUE))
     
     # Save results
     write.csv(genre_sentiment, file.path(OUTPUT_DIR, "genre_sentiment.csv"), row.names = FALSE)
