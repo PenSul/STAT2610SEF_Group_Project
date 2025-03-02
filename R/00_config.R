@@ -29,7 +29,7 @@ PROJECT_SETTINGS <- list(
 )
 
 # Define global file paths
-BASE_DIR <- "~/STAT2610SEF_Group_Project"
+BASE_DIR <- "C:/Projects/R_GP/STAT2610SEF_Group_Project"
 DATA_DIR <- file.path(BASE_DIR, "Data")
 LYRICS_DIR <- file.path(DATA_DIR, "Lyrics")
 COMMENTS_DIR <- file.path(DATA_DIR, "Comments")
