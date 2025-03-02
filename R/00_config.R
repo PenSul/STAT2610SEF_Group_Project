@@ -2,20 +2,23 @@
 # Configuration file for Music & Emotion Analysis project
 # STAT 2610SEF Course Project - Spring 2025
 
-# TBD - You guys better not steal the API, I will add license later.
+# :) better not steal the API, I will add license later.
+
 
 # API credentials
 API_CREDENTIALS <- list(
     genius = list(
-        client_id = "BhxwRG6hXz6QpkCeh223fFQpe3QuG2aNAkhBc--uZMDED8THzzn9ojKxU4iQL1R3",
-        client_secret = "S-X2LlkbEdoYbdwPHvXoQ_8LSoiwmF-9bGqY3NaC-NvzbjuH9Kpo6JjClU8vIjigQeJ04qd5iZdzLXIv2eOoZA",
+        # Fill in your genius API
+        client_id = "", 
+        client_secret = "",
         redirect_uri = "http://localhost:1410/"
     ),
     youtube = list(
+        # Fill in your Google Cloud API
         app_name = "STAT2610SEF-YouTube-Client",
-        client_id = "546617841768-fs72fvg6f4jpgirtih1htnfoisj9iium.apps.googleusercontent.com",
-        client_secret = "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",
-        api_key = "AIzaSyBo8sZOMHbToIFBe9CL1TNUQug3khvzPlM"
+        client_id = "",
+        client_secret = "",
+        api_key = ""
     )
 )
 
