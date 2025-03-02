@@ -2,8 +2,6 @@
 # Text processing functions for Music & Emotion Analysis project
 # STAT 2610SEF Course Project - Spring 2025
 
-#' Clean and tokenize lyrics text
-#'
 #' Processes raw lyrics text to prepare for analysis.
 #'
 #' @param lyricsData data.frame containing lyrics information
@@ -77,8 +75,6 @@ ProcessComments <- function(commentsData, stopwords = GetStopwords()) {
     return(cleaned_tokens)
 }
 
-#' Calculate TF-IDF for lyrics by genre
-#'
 #' Calculates Term Frequency-Inverse Document Frequency to identify important words by genre.
 #'
 #' @param lyrics_tokens data.frame with processed tokens

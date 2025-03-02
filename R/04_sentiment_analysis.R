@@ -11,16 +11,16 @@
 #' @return data.frame with sentiment scores
 AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sentiment_lexicon) {
     # Load sentiment lexicon
-    if (lexicon == "nrc") {
+    if (lexicon == "bing") {
+        sentiment_lex <- get_sentiments("bing") # <-- Bing is the first choice
+    } else if (lexicon == "nrc") {
         sentiment_lex <- get_sentiments("nrc")
-    } else if (lexicon == "bing") {
-        sentiment_lex <- get_sentiments("bing")
     } else if (lexicon == "afinn") {
         sentiment_lex <- get_sentiments("afinn")
     } else if (lexicon == "loughran") {
         sentiment_lex <- get_sentiments("loughran")
     } else {
-        stop("Invalid lexicon specified. Use 'nrc', 'bing', 'afinn', or 'loughran'")
+        stop("Invalid lexicon specified")
     }
     
     # Join tokens with sentiment lexicon
@@ -40,6 +40,14 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
             filter(sentiment %in% c("positive", "negative")) %>%
             count(SongID, SongName, ArtistName, MajorityGenre, MinorityGenre, sentiment) %>%
             spread(sentiment, n, fill = 0)
+        
+        # Make sure positive and negative columns exist
+        if (!"positive" %in% colnames(pos_neg)) {
+            pos_neg$positive <- 0
+        }
+        if (!"negative" %in% colnames(pos_neg)) {
+            pos_neg$negative <- 0
+        }
         
         # Join emotion and pos/neg sentiment
         song_sentiment <- song_sentiment %>%
@@ -62,10 +70,21 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
         # For bing, count positive and negative words
         song_sentiment <- lyrics_sentiment %>%
             count(SongID, SongName, ArtistName, MajorityGenre, MinorityGenre, sentiment) %>%
-            spread(sentiment, n, fill = 0) %>%
+            spread(sentiment, n, fill = 0)
+        
+        # Make sure positive and negative columns exist
+        if (!"positive" %in% colnames(song_sentiment)) {
+            song_sentiment$positive <- 0
+        }
+        if (!"negative" %in% colnames(song_sentiment)) {
+            song_sentiment$negative <- 0
+        }
+        
+        song_sentiment <- song_sentiment %>%
             mutate(
                 sentiment_words = positive + negative,
-                positivity_ratio = positive / (positive + negative)
+                positivity_ratio = ifelse(positive + negative > 0, 
+                                          positive / (positive + negative), 0.5)
             )
         
         # Calculate total words and sentiment density
@@ -84,7 +103,8 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
             summarize(
                 sentiment_sum = sum(value),
                 sentiment_words = n(),
-                avg_sentiment = sentiment_sum / sentiment_words
+                avg_sentiment = sentiment_sum / sentiment_words,
+                .groups = 'drop'
             )
         
         # Calculate total words and sentiment density
@@ -103,10 +123,9 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
             spread(sentiment, n, fill = 0)
         
         # Calculate total sentiment words
-        song_sentiment <- song_sentiment %>%
-            mutate(
-                sentiment_words = rowSums(select(., -SongID, -SongName, -ArtistName, -MajorityGenre, -MinorityGenre))
-            )
+        sentiment_cols <- setdiff(colnames(song_sentiment), 
+                                  c("SongID", "SongName", "ArtistName", "MajorityGenre", "MinorityGenre"))
+        song_sentiment$sentiment_words <- rowSums(song_sentiment[, sentiment_cols])
         
         # Calculate total words and sentiment density
         total_words <- lyrics_tokens %>%
@@ -259,7 +278,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
     # Aggregate by genre
     genre_sentiment <- song_sentiment %>%
         group_by(MajorityGenre) %>%
-        summarize(across(where(is.numeric), mean, na.rm = TRUE))
+        summarize(across(where(is.numeric), \(x) mean(x, na.rm = TRUE)))
     
     # Save results
     write.csv(genre_sentiment, file.path(OUTPUT_DIR, "genre_sentiment.csv"), row.names = FALSE)

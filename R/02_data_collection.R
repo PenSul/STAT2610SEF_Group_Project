@@ -4,7 +4,7 @@
 
 # Source configuration and setup
 source("R/00_config.R")
-source("R/genius_auth.R")  # Source the custom auth file
+source("R/genius_auth.R")
 
 #' Read song list from CSV file
 #'
@@ -22,7 +22,7 @@ ReadSongList <- function() {
     songData <- read.csv(PROJECT_SETTINGS$csv_file_path, stringsAsFactors = FALSE)
     
     # If needed, clean column names based on your CSV structure
-    # If your CSV already has the correct column names, you can skip this
+    # If the CSV already has the correct column names, can skip this
     if (!all(c("MajorityGenre", "MinorityGenre", "SongName", "ArtistName", "SongLink") %in% colnames(songData))) {
         # Assuming the CSV has columns in this order
         colnames(songData) <- c("MajorityGenre", "MinorityGenre", "SongName", 
@@ -78,7 +78,7 @@ SetupAPITokens <- function() {
         cat("Authenticating with YouTube API...\n")
         tokens$youtube <- tryCatch({
             yt_oauth(
-                app_id = API_CREDENTIALS$youtube$app_name,
+                app_id = API_CREDENTIALS$youtube$client_id,
                 app_secret = API_CREDENTIALS$youtube$client_secret,
                 token = ""
             )
@@ -155,10 +155,8 @@ CollectLyrics <- function(songData, genius_token) {
         
         # Try to get lyrics from Genius
         tryCatch({
-            # Search query
+            # Search query/result
             search_query <- paste(artist, song)
-            
-            # Use our custom genius_get function with the OAuth token
             search_results <- genius_get(
                 paste0("search?q=", URLencode(search_query)),
                 token = genius_token
@@ -184,19 +182,19 @@ CollectLyrics <- function(songData, genius_token) {
                 library(rvest)
                 page <- read_html(lyrics_url)
                 
-                # Extract lyrics div - try different selectors for various Genius layouts
+                # Extract lyrics div
                 lyrics_div <- html_nodes(page, ".lyrics")
                 if (length(lyrics_div) > 0) {
                     lyrics_text <- html_text(lyrics_div)
                 } else {
-                    # Try alternate selectors for newer Genius layout
+                    # Try other selectors for newer Genius layout
                     lyrics_div <- html_nodes(page, '[data-lyrics-container="true"]')
                     lyrics_text <- paste(html_text(lyrics_div), collapse = "\n")
                 }
                 
                 # Clean up lyrics
-                lyrics_text <- gsub("\n+", "\n", lyrics_text)  # Remove extra line breaks
-                lyrics_text <- trimws(lyrics_text)             # Remove leading/trailing whitespace
+                lyrics_text <- gsub("\n+", "\n", lyrics_text)
+                lyrics_text <- trimws(lyrics_text)
                 
                 if (nchar(lyrics_text) > 0) {
                     # Save lyrics to file
@@ -257,7 +255,7 @@ CollectLyrics <- function(songData, genius_token) {
             ))
         })
         
-        # Rate limiting - pause between API calls to avoid hitting limits
+        # Rate limiting - pause between API calls to avoid hitting limits since the API is dog shit
         Sys.sleep(1)
     }
     
@@ -287,6 +285,12 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
         PublishedAt = character(),
         stringsAsFactors = FALSE
     )
+    
+    # Check if tuber is loaded and authenticated
+    if (!requireNamespace("tuber", quietly = TRUE)) {
+        warning("Package 'tuber' is not available. Cannot collect comments.")
+        return(commentData)
+    }
     
     # Process each song with a YouTube link
     for (i in 1:nrow(songData)) {
@@ -348,7 +352,7 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
         })
         
         # Rate limiting - pause between API calls
-        Sys.sleep(2)
+        Sys.sleep(2) # Change to 1 if slow. Saves time
     }
     
     # Save all comments data

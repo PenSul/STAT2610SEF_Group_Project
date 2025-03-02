@@ -11,10 +11,10 @@
 
 #' Authenticate with Genius API using OAuth 2.0
 #'
-#' @param client_id Your Genius API Client ID
-#' @param client_secret Your Genius API Client Secret  
-#' @param redirect_uri The redirect URI (default: http://localhost:1410/)
-#' @return An OAuth token object
+#' @param client_id Genius API Client ID
+#' @param client_secret Genius API Client Secret  
+#' @param redirect_uri Default: http://localhost:1410/
+#' @return OAuth token object
 #' @import httr
 genius_oauth <- function(client_id, client_secret, redirect_uri = "http://localhost:1410/") {
     library(httr)

@@ -268,8 +268,6 @@ CreateGenreComparisonPlots <- function(genre_sentiment) {
 
 #' Create a comparison plot of lyrics vs comments sentiment
 #'
-#' Generates a visualization comparing sentiment in lyrics and comments.
-#'
 #' @param comparison_data result from CompareLyricsAndComments()
 #' @return NULL (saves plot to file)
 CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
@@ -278,6 +276,10 @@ CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
         warning("No comparison data available for visualization.")
         return(NULL)
     }
+    
+    # Filter out NA values before plotting
+    comparison_data <- comparison_data %>%
+        filter(!is.na(lyrics_positivity) & !is.na(comments_positivity))
     
     # Create scatter plot
     p <- ggplot(comparison_data, aes(x = lyrics_positivity, y = comments_positivity, 
