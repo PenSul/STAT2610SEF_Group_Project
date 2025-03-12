@@ -1,8 +1,5 @@
 # STAT2610SEF_Group_Project/R/00_config.R
 # Configuration file for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
-
-# :) better not steal the API, I will add license later.
 
 
 # API credentials
@@ -41,38 +38,38 @@ VISUALS_DIR <- file.path(BASE_DIR, "Visualizations")
 
 # Emotion categories and colors for visualization
 EMOTION_COLORS <- list(
-    joy = "#FFD700",         # Gold
-    trust = "#32CD32",       # Lime Green
-    fear = "#800080",        # Purple
-    surprise = "#FF8C00",    # Dark Orange
-    sadness = "#4169E1",     # Royal Blue
-    disgust = "#006400",     # Dark Green
-    anger = "#FF0000",       # Red
-    anticipation = "#FF69B4" # Hot Pink
+    joy = "#FFD700",
+    trust = "#32CD32",
+    fear = "#800080",
+    surprise = "#FF8C00",
+    sadness = "#4169E1",
+    disgust = "#006400",
+    anger = "#FF0000",
+    anticipation = "#FF69B4"
 )
 
 # Sentiment colors for visualization
 SENTIMENT_COLORS <- list(
-    positive = "#4CAF50",   # Green
-    negative = "#F44336",   # Red
-    neutral = "#9E9E9E"     # Grey
+    positive = "#4CAF50",
+    negative = "#F44336",
+    neutral = "#9E9E9E"
 )
 
 # Genre colors for visualization
 GENRE_COLORS <- list(
-    "Pop" = "#E91E63",        # Pink
-    "Rock" = "#2196F3",       # Blue
-    "Hip Hop" = "#FF9800",    # Orange
-    "R&B" = "#9C27B0",        # Purple
-    "Country" = "#8BC34A",    # Light Green
-    "Electronic" = "#00BCD4", # Cyan
-    "Jazz" = "#FFC107",       # Amber
-    "Classical" = "#607D8B",  # Blue Grey
-    "Folk" = "#795548",       # Brown
-    "Metal" = "#000000",      # Black
-    "Reggae" = "#CDDC39",     # Lime
-    "Blues" = "#3F51B5",      # Indigo
-    "Other" = "#9E9E9E"       # Grey
+    "Pop" = "#E91E63",
+    "Rock" = "#2196F3",
+    "Hip Hop" = "#FF9800",
+    "R&B" = "#9C27B0",
+    "Country" = "#8BC34A",
+    "Electronic" = "#00BCD4",
+    "Jazz" = "#FFC107",
+    "Classical" = "#607D8B",
+    "Folk" = "#795548",
+    "Metal" = "#000000",
+    "Reggae" = "#CDDC39",
+    "Blues" = "#3F51B5",
+    "Other" = "#9E9E9E"
 )
 
 # StopWords to exclude from text analysis

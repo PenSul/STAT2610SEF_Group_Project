@@ -1,11 +1,9 @@
 # STAT2610SEF_Group_Project/R/02_data_collection.R
 # Data collection functions for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
 
-# Source configuration and setup
+
 source("R/00_config.R")
 source("R/genius_auth.R")
-
 #' Read song list from CSV file
 #'
 #' Reads song data from a local CSV file.
@@ -122,7 +120,7 @@ ExtractYouTubeID <- function(url) {
 #' Fetches lyrics for each song in the dataset using the Genius API.
 #'
 #' @param songData data.frame containing song information
-#' @param genius_token OAuth token from SetupAPITokens()$genius
+#' @param genius_token OAuth token from SetupAPITokens()
 #' @return data.frame with song info and lyrics, with columns:
 #'   SongID, SongName, ArtistName, MajorityGenre, MinorityGenre, 
 #'   LyricsStatus, Lyrics
@@ -261,7 +259,6 @@ CollectLyrics <- function(songData, genius_token) {
     
     # Save the lyrics data
     write.csv(lyricsData, file.path(OUTPUT_DIR, "lyrics_data.csv"), row.names = FALSE)
-    
     return(lyricsData)
 }
 
@@ -351,12 +348,10 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
                         videoId, e$message))
         })
         
-        # Rate limiting - pause between API calls
-        Sys.sleep(2) # Change to 1 if slow. Saves time
+        # Rate limiting - pause between API calls. You get it. No money!
+        Sys.sleep(2)
     }
-    
-    # Save all comments data
+    # Save all comments
     write.csv(commentData, file.path(OUTPUT_DIR, "all_comments.csv"), row.names = FALSE)
-    
     return(commentData)
 }

@@ -1,6 +1,7 @@
 # STAT2610SEF_Group_Project/R/youtube_scraper.R
 # YouTube comment collection using API key directly
 
+
 #' Collect YouTube comments using httr direct API calls
 #'
 #' @param songData Data frame with song information
@@ -122,9 +123,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) {
         # pause between API calls
         Sys.sleep(2)
     }
-    
     # Save all comments to a single file
     write.csv(commentData, file.path(OUTPUT_DIR, "all_comments.csv"), row.names = FALSE)
-    
     return(commentData)
 }

@@ -2,22 +2,22 @@
 # Main script for Music & Emotion Analysis project
 # STAT 2610SEF Course Project - Spring 2025
 
-# Load required libraries
+
 library(tidyverse)
 library(tidytext)
-library(tuber)        # For YouTube API
-library(rvest)        # For web scraping
-library(httr)         # For API requests
-library(jsonlite)     # For JSON parsing
-library(textdata)     # For sentiment lexicons
-library(sentimentr)   # For sentiment analysis
-library(wordcloud)    # For word clouds
-library(plotly)       # For interactive plots
-library(knitr)        # For report generation
-library(rmarkdown)    # For report generation
-library(dplyr)        # For data manipulation
+library(tuber)
+library(rvest)
+library(httr)
+library(jsonlite)
+library(textdata)
+library(sentimentr)
+library(wordcloud)
+library(plotly)
+library(knitr)
+library(rmarkdown)
+library(dplyr)
 
-# Source project scripts
+
 source("R/00_config.R")
 source("R/01_setup.R")
 source("R/02_data_collection.R")
@@ -119,12 +119,13 @@ if (nrow(lyricsData) > 0 && any(lyricsData$LyricsStatus == "found")) {
         CreateLyricsCommentsComparisonPlot(lyrics_comments_comparison)
     }
     
+    cat("Analysis complete!\n")
+    
     # Step 12: Generate report
     # cat("Generating final report...\n")
-    # Only include if have the report generation function (idk will write or not)
+    # Only include if have the report generation function (IDK will write or not)
     # GenerateReport()
     
-    cat("Analysis complete!\n")
 } else {
     stop("No lyrics were found. Cannot continue with analysis.")
 }

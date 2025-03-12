@@ -1,6 +1,6 @@
 # STAT2610SEF_Group_Project/R/05_visualization.R
 # Visualization functions for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
+
 
 #' Create word clouds for each genre
 #'
@@ -47,7 +47,6 @@ CreateGenreWordClouds <- function(lyrics_tokens,
         dev.off()
         cat("Created word cloud for", genre, "at", filename, "\n")
     }
-    
     return(invisible(NULL))
 }
 
@@ -151,7 +150,6 @@ CreateSentimentPlots <- function(sentiment_data, data_type = "Lyrics") {
             selfcontained = TRUE
         )
     }
-    
     return(invisible(NULL))
 }
 
@@ -262,7 +260,6 @@ CreateGenreComparisonPlots <- function(genre_sentiment) {
             selfcontained = TRUE
         )
     }
-    
     return(invisible(NULL))
 }
 
@@ -319,6 +316,5 @@ CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
         file.path(VISUALS_DIR, "lyrics_comments_comparison_interactive.html"),
         selfcontained = TRUE
     )
-    
     return(invisible(NULL))
 }

@@ -1,6 +1,6 @@
 # STAT2610SEF_Group_Project/R/01_setup.R
 # Setup functions for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
+
 
 #' Create necessary directories for the project
 #'
@@ -71,7 +71,6 @@ CheckAndInstallPackages <- function() {
     for (pkg in requiredPackages) {
         library(pkg, character.only = TRUE)
     }
-    
     return(TRUE)
 }
 
@@ -115,7 +114,6 @@ PrepareTextData <- function() {
     }, error = function(e) {
         warning("Failed to load Loughran lexicon: ", e$message)
     })
-    
     return(lexicons)
 }
 

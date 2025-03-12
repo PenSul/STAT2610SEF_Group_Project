@@ -1,6 +1,7 @@
 # STAT2610SEF_Group_Project/R/lyrics_scraper.R
 # Direct lyrics scraping function using Genius search
 
+
 #' Scrape lyrics directly from Genius website
 #'
 #' @param artist Artist name
@@ -128,7 +129,6 @@ ScrapeLyrics <- function(artist, title) {
         lyrics_text <- gsub("\n+", "\n", lyrics_text)  # Remove extra line breaks
         lyrics_text <- gsub("\\[.*?\\]", "", lyrics_text)  # Remove Verse, Chorus, etc
         lyrics_text <- trimws(lyrics_text)  # Remove leading / trailing whitespace
-        
         return(lyrics_text)
         
     }, error = function(e) {
@@ -185,7 +185,6 @@ ScrapeLyricsViaLyricsGenius <- function(artist, title) {
         lyrics_text <- gsub("\n+", "\n", lyrics_text)  # Remove extra line breaks
         lyrics_text <- gsub("\\[.*?\\]", "", lyrics_text)  # Remove [Verse], [Chorus], etc.
         lyrics_text <- trimws(lyrics_text)  # Remove leading/trailing whitespace
-        
         return(lyrics_text)
         
     }, error = function(e) {
@@ -279,13 +278,11 @@ CollectLyricsDirectly <- function(songData) {
             cat(sprintf("  Failed to find lyrics for %s\n", song))
         }
         
-        # Pause between requests to avoid overloading the site
+        # Pause to avoid overloading
         Sys.sleep(2)
     }
-    
     # Save the lyrics data
     write.csv(lyricsData, file.path(OUTPUT_DIR, "lyrics_data.csv"), row.names = FALSE)
-    
     return(lyricsData)
 }
 
@@ -363,6 +360,5 @@ AddManualLyrics <- function(songData) {
     
     # Save the lyrics data
     write.csv(lyricsData, file.path(OUTPUT_DIR, "lyrics_data.csv"), row.names = FALSE)
-    
     return(lyricsData)
 }

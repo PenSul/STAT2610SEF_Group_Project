@@ -1,6 +1,6 @@
 # STAT2610SEF_Group_Project/R/genius_auth.R
 # Custom Genius API authentication function
-# STAT 2610SEF Course Project - Spring 2025
+
 
 #' Operator for providing default values for NULL
 #'
@@ -35,7 +35,6 @@ genius_oauth <- function(client_id, client_secret, redirect_uri = "http://localh
         scope = "me",
         cache = TRUE
     )
-    
     return(token)
 }
 
@@ -52,14 +51,14 @@ genius_get <- function(endpoint, token, ...) {
     
     base_url <- "https://api.genius.com/"
     
-    # Make request with proper authentication
+    # Make request with the proper authentication
     response <- GET(
         url = paste0(base_url, endpoint),
         config = config(token = token),
         ...
     )
     
-    # Check for errors
+    # Check errors
     if (http_error(response)) {
         stop(
             "Genius API request failed [", status_code(response), "]\n", 

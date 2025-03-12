@@ -1,6 +1,6 @@
 # STAT2610SEF_Group_Project/R/04_sentiment_analysis.R
 # Sentiment analysis functions for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
+
 
 #' Analyze sentiment of lyrics using NRC lexicon
 #'
@@ -11,8 +11,8 @@
 #' @return data.frame with sentiment scores
 AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sentiment_lexicon) {
     # Load sentiment lexicon
-    if (lexicon == "bing") {
-        sentiment_lex <- get_sentiments("bing") # <-- Bing is the first choice
+    if (lexicon == "bing") { # Bing is the first choice
+        sentiment_lex <- get_sentiments("bing")
     } else if (lexicon == "nrc") {
         sentiment_lex <- get_sentiments("nrc")
     } else if (lexicon == "afinn") {
@@ -325,9 +325,7 @@ CompareLyricsAndComments <- function(lyrics_sentiment, comments_sentiment) {
         mutate(
             sentiment_diff = comments_positivity - lyrics_positivity
         )
-    
     # Save results
     write.csv(comparison, file.path(OUTPUT_DIR, "lyrics_comments_comparison.csv"), row.names = FALSE)
-    
     return(comparison)
 }

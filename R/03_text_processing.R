@@ -1,6 +1,6 @@
 # STAT2610SEF_Group_Project/R/03_text_processing.R
 # Text processing functions for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
+
 
 #' Processes raw lyrics text to prepare for analysis.
 #'
@@ -125,14 +125,15 @@ ExtractNgrams <- function(lyricsData, n = 2, stopwords = GetStopwords()) {
         bigrams_separated <- ngrams %>%
             separate(bigram, c("word1", "word2"), sep = " ")
         
-        # Remove stopwords from both words
+        # Remove stopwords from both words. I can use for loop but I am lazy.
         bigrams_filtered <- bigrams_separated %>%
             filter(!word1 %in% stopwords) %>%
             filter(!word2 %in% stopwords) %>%
+            
             filter(nchar(word1) > 2) %>%             # Remove short words
-            filter(nchar(word2) > 2) %>%             # Remove short words
+            filter(nchar(word2) > 2) %>%             
             filter(!grepl("^\\d+$", word1)) %>%      # Remove numbers
-            filter(!grepl("^\\d+$", word2))          # Remove numbers
+            filter(!grepl("^\\d+$", word2))          
         
         # Unite the words back into bigrams
         bigrams_united <- bigrams_filtered %>%
@@ -157,17 +158,17 @@ ExtractNgrams <- function(lyricsData, n = 2, stopwords = GetStopwords()) {
         trigrams_separated <- ngrams %>%
             separate(trigram, c("word1", "word2", "word3"), sep = " ")
         
-        # Remove stopwords from all words
+        # Remove stopwords from all words. Same here like above.
         trigrams_filtered <- trigrams_separated %>%
             filter(!word1 %in% stopwords) %>%
             filter(!word2 %in% stopwords) %>%
             filter(!word3 %in% stopwords) %>%
             filter(nchar(word1) > 2) %>%             # Remove short words
-            filter(nchar(word2) > 2) %>%             # Remove short words
-            filter(nchar(word3) > 2) %>%             # Remove short words
+            filter(nchar(word2) > 2) %>%             
+            filter(nchar(word3) > 2) %>%             
             filter(!grepl("^\\d+$", word1)) %>%      # Remove numbers
-            filter(!grepl("^\\d+$", word2)) %>%      # Remove numbers
-            filter(!grepl("^\\d+$", word3))          # Remove numbers
+            filter(!grepl("^\\d+$", word2)) %>%      
+            filter(!grepl("^\\d+$", word3))          
         
         # Unite the words back into trigrams
         trigrams_united <- trigrams_filtered %>%
