@@ -145,7 +145,7 @@ ScrapeLyrics <- function(artist, title) {
 ScrapeLyricsViaLyricsGenius <- function(artist, title) {
     # Check if the package is available
     if (!requireNamespace("reticulate", quietly = TRUE)) {
-        cat("Package 'reticulate' not available. Installing now...\n")
+        cat("Package 'reticulate' isnt install. Installing now...\n")
         install.packages("reticulate")
     }
     
@@ -204,7 +204,7 @@ CollectLyricsDirectly <- function(songData) {
             install.packages("reticulate")
         }
     }, error = function(e) {
-        cat("Could not install reticulate package for Python integration:", e$message, "\n")
+        cat("Cannot install reticulate package for Python integration:", e$message, "\n")
     })
     
     python_available <- tryCatch({
@@ -234,18 +234,18 @@ CollectLyricsDirectly <- function(songData) {
         cat(sprintf("Fetching lyrics for: %s by %s (%d of %d)\n", 
                     song, artist, i, nrow(songData)))
         
-        # First try method 1: Direct web scraping
+        # First try Direct web scraping
         lyrics_text <- ScrapeLyrics(artist, song)
         
-        # If first method failed and Python is available, try method 2
+        # If failed and Python is available, try
         if ((is.na(lyrics_text) || nchar(lyrics_text) < 10) && python_available) {
-            cat("  Trying alternative method (lyricsgenius)...\n")
+            cat("Trying alternative method (lyricsgenius)...\n")
             lyrics_text <- ScrapeLyricsViaLyricsGenius(artist, song)
         }
         
-        # If we found lyrics with either method
+        # If we found lyrics withe either 1
         if (!is.na(lyrics_text) && nchar(lyrics_text) > 10) {
-            # Save lyrics to file
+            # Save
             filename <- file.path(LYRICS_DIR, paste0(songData$SongID[i], ".txt"))
             writeLines(lyrics_text, filename)
             
@@ -261,7 +261,7 @@ CollectLyricsDirectly <- function(songData) {
                 stringsAsFactors = FALSE
             ))
             
-            cat(sprintf("  Success! Saved lyrics for %s\n", song))
+            cat(sprintf("Success! Saved lyrics for %s\n", song))
         } else {
             # No lyrics found
             lyricsData <- rbind(lyricsData, data.frame(
@@ -275,20 +275,18 @@ CollectLyricsDirectly <- function(songData) {
                 stringsAsFactors = FALSE
             ))
             
-            cat(sprintf("  Failed to find lyrics for %s\n", song))
+            cat(sprintf("Failed to find lyrics for %s\n", song))
         }
         
         # Pause to avoid overloading
         Sys.sleep(2)
     }
-    # Save the lyrics data
+    # Save
     write.csv(lyricsData, file.path(OUTPUT_DIR, "lyrics_data.csv"), row.names = FALSE)
     return(lyricsData)
 }
 
-#' Manual lyrics collection function (for testing)
-#'
-#' This function lets you manually enter lyrics for testing
+#' Manual lyrics collection function (FOR TESTING)
 #'
 #' @param songData Data frame with song information  
 #' @return Data frame with song info and lyrics
@@ -357,7 +355,6 @@ AddManualLyrics <- function(songData) {
         
         cat(sprintf("Added sample lyrics for %s by %s\n", song, artist))
     }
-    
     # Save the lyrics data
     write.csv(lyricsData, file.path(OUTPUT_DIR, "lyrics_data.csv"), row.names = FALSE)
     return(lyricsData)

@@ -1,10 +1,10 @@
 # STAT2610SEF_Group_Project/R/04_sentiment_analysis.R
-# Sentiment analysis functions for Music & Emotion Analysis project
+# Sentiment analysis functions
 
 
 #' Analyze sentiment of lyrics using NRC lexicon
 #'
-#' Calculates sentiment scores for lyrics text.
+#' Calculate sentiment scores for lyrics text
 #'
 #' @param lyrics_tokens data.frame with processed lyrics tokens
 #' @param lexicon character name of sentiment lexicon to use
@@ -137,7 +137,7 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
             mutate(sentiment_density = sentiment_words / total_words)
     }
     
-    # Save results to file
+    # Save result
     write.csv(lyrics_sentiment, file.path(OUTPUT_DIR, "lyrics_sentiment_words.csv"), row.names = FALSE)
     write.csv(song_sentiment, file.path(OUTPUT_DIR, "song_sentiment_scores.csv"), row.names = FALSE)
     
@@ -149,13 +149,13 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
 
 #' Analyze sentiment of comments using NRC lexicon
 #'
-#' Calculates sentiment scores for YouTube comments.
+#' Calculate sentiment scores for YouTube comments
 #'
 #' @param comment_tokens data.frame with processed comment tokens
 #' @param lexicon character name of sentiment lexicon to use
 #' @return data.frame with sentiment scores
 AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$sentiment_lexicon) {
-    # Check if comment data exists
+    # Check if comment data exist
     if (is.null(comment_tokens) || nrow(comment_tokens) == 0) {
         warning("No comment data available for sentiment analysis.")
         return(NULL)
@@ -253,7 +253,7 @@ AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$
         group_by(SongID) %>%
         summarize(across(where(is.numeric), mean, na.rm = TRUE))
     
-    # Save results to file
+    # Save result
     write.csv(comment_sentiment, file.path(OUTPUT_DIR, "comment_sentiment_words.csv"), row.names = FALSE)
     write.csv(comment_scores, file.path(OUTPUT_DIR, "comment_sentiment_scores.csv"), row.names = FALSE)
     write.csv(song_sentiment, file.path(OUTPUT_DIR, "song_comment_sentiment.csv"), row.names = FALSE)
@@ -267,7 +267,7 @@ AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$
 
 #' Compare sentiment across genres
 #'
-#' Aggregates sentiment scores by genre.
+#' Aggregates sentiment scores by genre
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @return data.frame with genre sentiment scores
@@ -280,7 +280,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
         group_by(MajorityGenre) %>%
         summarize(across(where(is.numeric), mean, na.rm = TRUE))
     
-    # Save results
+    # Save result
     write.csv(genre_sentiment, file.path(OUTPUT_DIR, "genre_sentiment.csv"), row.names = FALSE)
     
     return(genre_sentiment)
@@ -288,7 +288,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
 
 #' Compare lyrics and comments sentiment
 #'
-#' Compares sentiment in lyrics vs YouTube comments.
+#' Compares sentiment in lyrics vs YouTube comments
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @param comments_sentiment result from AnalyzeCommentsSentiment()
@@ -304,7 +304,7 @@ CompareLyricsAndComments <- function(lyrics_sentiment, comments_sentiment) {
     lyrics_scores <- lyrics_sentiment$song_sentiment
     comment_scores <- comments_sentiment$song_sentiment
     
-    # Join datasets
+    # Join dataset
     comparison <- lyrics_scores %>%
         select(SongID, SongName, ArtistName, MajorityGenre, MinorityGenre, 
                positive, negative, positivity_ratio) %>%
@@ -325,7 +325,7 @@ CompareLyricsAndComments <- function(lyrics_sentiment, comments_sentiment) {
         mutate(
             sentiment_diff = comments_positivity - lyrics_positivity
         )
-    # Save results
+    # Save result
     write.csv(comparison, file.path(OUTPUT_DIR, "lyrics_comments_comparison.csv"), row.names = FALSE)
     return(comparison)
 }

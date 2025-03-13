@@ -1,15 +1,15 @@
 # STAT2610SEF_Group_Project/R/02_data_collection.R
-# Data collection functions for Music & Emotion Analysis project
+# Data collection functions
 
 
 source("R/00_config.R")
 source("R/genius_auth.R")
 #' Read song list from CSV file
 #'
-#' Reads song data from a local CSV file.
+#' Read song data from a CSV file
 #'
 #' @return data.frame containing song information with columns:
-#'   MajorityGenre, MinorityGenre, SongName, ArtistName, SongLink, SongID
+#' MajorityGenre, MinorityGenre, SongName, ArtistName, SongLink, SongID
 ReadSongList <- function() {
     # Check if file exists
     if (!file.exists(PROJECT_SETTINGS$csv_file_path)) {
@@ -22,7 +22,6 @@ ReadSongList <- function() {
     # If needed, clean column names based on your CSV structure
     # If the CSV already has the correct column names, can skip this
     if (!all(c("MajorityGenre", "MinorityGenre", "SongName", "ArtistName", "SongLink") %in% colnames(songData))) {
-        # Assuming the CSV has columns in this order
         colnames(songData) <- c("MajorityGenre", "MinorityGenre", "SongName", 
                                 "ArtistName", "SongLink")
     }
@@ -37,7 +36,6 @@ ReadSongList <- function() {
     
     # Display summary of loaded data
     cat("Loaded", nrow(songData), "songs from CSV file\n")
-    
     return(songData)
 }
 
@@ -88,7 +86,6 @@ SetupAPITokens <- function() {
     } else {
         warning("YouTube API credentials not configured.")
     }
-    
     return(tokens)
 }
 
@@ -117,7 +114,7 @@ ExtractYouTubeID <- function(url) {
 
 #' Collect song lyrics using Genius API
 #'
-#' Fetches lyrics for each song in the dataset using the Genius API.
+#' Fetches lyrics for each song in the dataset
 #'
 #' @param songData data.frame containing song information
 #' @param genius_token OAuth token from SetupAPITokens()
@@ -147,13 +144,13 @@ CollectLyrics <- function(songData, genius_token) {
             artist <- gsub("\\s*\\(ft\\..*\\)", "", artist)
         }
         
-        # Log progress
+        # Logg
         cat(sprintf("Fetching lyrics for: %s by %s (%d of %d)\n", 
                     song, artist, i, nrow(songData)))
         
         # Try to get lyrics from Genius
         tryCatch({
-            # Search query/result
+            # Search query / result
             search_query <- paste(artist, song)
             search_results <- genius_get(
                 paste0("search?q=", URLencode(search_query)),

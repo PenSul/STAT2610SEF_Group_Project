@@ -7,7 +7,7 @@
 #' @param songData Data frame with song information
 #' @param max_results Maximum number of comments to fetch per video
 #' @return Data frame with comment data
-CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) {
+CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) { # Need to be change before push
     library(httr)
     library(jsonlite)
     
@@ -102,7 +102,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) {
                     stringsAsFactors = FALSE
                 )
                 
-                # Save to CSV
+                # Save
                 file_path <- file.path(COMMENTS_DIR, paste0(songData$SongID[i], "_comments.csv"))
                 write.csv(video_comments, file_path, row.names = FALSE)
                 
@@ -123,7 +123,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) {
         # pause between API calls
         Sys.sleep(2)
     }
-    # Save all comments to a single file
+    # Save comments
     write.csv(commentData, file.path(OUTPUT_DIR, "all_comments.csv"), row.names = FALSE)
     return(commentData)
 }

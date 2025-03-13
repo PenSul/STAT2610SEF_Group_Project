@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/genius_auth.R
-# Custom Genius API authentication function
+# Genius API authentication function
 
 
 #' Operator for providing default values for NULL

@@ -1,8 +1,8 @@
 # STAT2610SEF_Group_Project/R/03_text_processing.R
-# Text processing functions for Music & Emotion Analysis project
+# Text processing functions
 
 
-#' Processes raw lyrics text to prepare for analysis.
+#' Processes raw lyrics text
 #'
 #' @param lyricsData data.frame containing lyrics information
 #' @param stopwords character vector of stopwords to remove
@@ -37,7 +37,7 @@ ProcessLyrics <- function(lyricsData, stopwords = GetStopwords()) {
 
 #' Clean and tokenize comments text
 #'
-#' Processes raw comments text to prepare for analysis.
+#' Processes raw comments text
 #'
 #' @param commentsData data.frame containing comments information
 #' @param stopwords character vector of stopwords to remove
@@ -75,7 +75,7 @@ ProcessComments <- function(commentsData, stopwords = GetStopwords()) {
     return(cleaned_tokens)
 }
 
-#' Calculates Term Frequency-Inverse Document Frequency to identify important words by genre.
+#' Calculate Term Frequency-Inverse Document Frequency to identify important words by genre
 #'
 #' @param lyrics_tokens data.frame with processed tokens
 #' @return data.frame with TF-IDF scores

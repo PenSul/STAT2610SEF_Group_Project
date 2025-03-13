@@ -1,6 +1,5 @@
 # STAT2610SEF_Group_Project/R/main.R
-# Main script for Music & Emotion Analysis project
-# STAT 2610SEF Course Project - Spring 2025
+# Main script
 
 
 library(tidyverse)
@@ -118,6 +117,21 @@ if (nrow(lyricsData) > 0 && any(lyricsData$LyricsStatus == "found")) {
     if (!is.null(lyrics_comments_comparison)) {
         CreateLyricsCommentsComparisonPlot(lyrics_comments_comparison)
     }
+    
+    # emotion heatmap
+    CreateEmotionHeatmap(lyrics_sentiment)
+    
+    # YouTube metrics visualization
+    CreateYouTubeMetricsViz(songData, lyrics_sentiment, commentsData)
+    
+    # sentiment trend analysis
+    CreateSentimentTrendViz(songData, lyrics_sentiment)
+    
+    # lexical diversity vs. emotion intensity plot
+    CreateLexicalDiversityEmotionPlot(lyrics_tokens, lyrics_sentiment)
+    
+    # emotion radar charts for genres
+    CreateEmotionRadarChart(lyrics_sentiment)
     
     cat("Analysis complete!\n")
     

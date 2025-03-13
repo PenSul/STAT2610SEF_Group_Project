@@ -1,12 +1,12 @@
 # STAT2610SEF_Group_Project/R/01_setup.R
-# Setup functions for Music & Emotion Analysis project
+# Setup functions
 
 
 #' Create necessary directories for the project
 #'
-#' Creates base directories for data storage if they don't exist.
+#' Creates base directories for data storage if they don't exist
 #'
-#' @return logical TRUE if successful
+#' @return TRUE if successful
 CreateDirectories <- function() {
     # Create main data directory
     if (!dir.exists(DATA_DIR)) {
@@ -33,7 +33,7 @@ CreateDirectories <- function() {
         dir.create(VISUALS_DIR, recursive = TRUE, showWarnings = FALSE)
     }
     
-    # Log creation results
+    # Log
     cat("Project directories created or verified:\n")
     cat("- Data directory:", DATA_DIR, "\n")
     cat("- Lyrics directory:", LYRICS_DIR, "\n")
@@ -46,11 +46,10 @@ CreateDirectories <- function() {
 
 #' Check required packages and install if missing
 #'
-#' Verifies that all required packages are installed.
+#' Verifies that all required packages are installed
 #'
-#' @return logical TRUE if all packages are installed successfully
+#' @return TRUE if all packages are installed successfully
 CheckAndInstallPackages <- function() {
-    # List of required packages
     requiredPackages <- c(
         "tidyverse", "tidytext", "tuber", "rvest", "httr", "jsonlite",
         "textdata", "sentimentr", "wordcloud", "plotly", "knitr",
@@ -59,7 +58,6 @@ CheckAndInstallPackages <- function() {
     
     # Check and install missing packages
     newPackages <- requiredPackages[!requiredPackages %in% installed.packages()[,"Package"]]
-    
     if (length(newPackages) > 0) {
         cat("Installing missing packages:", paste(newPackages, collapse = ", "), "\n")
         install.packages(newPackages, dependencies = TRUE)
@@ -76,7 +74,7 @@ CheckAndInstallPackages <- function() {
 
 #' Download and prepare sentiment lexicons
 #'
-#' Downloads sentiment lexicons for text analysis.
+#' Downloads sentiment lexicons for text analysis
 #'
 #' @return list of loaded lexicons
 PrepareTextData <- function() {
@@ -117,16 +115,16 @@ PrepareTextData <- function() {
     return(lexicons)
 }
 
-#' Get custom stopwords list
+#' Get stopwords list
 #'
-#' Combines standard stopwords with custom music-related stopwords.
+#' Combines standard stopwords with music-related stopwords
 #'
 #' @return character vector of stopwords
 GetStopwords <- function() {
     # Start with basic stopwords from tidytext
     stopwords <- tidytext::stop_words$word
     
-    # Add custom stopwords
+    # Add stopwords
     stopwords <- unique(c(stopwords, CUSTOM_STOPWORDS))
     
     return(stopwords)

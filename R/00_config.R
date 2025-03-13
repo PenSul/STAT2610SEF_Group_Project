@@ -1,17 +1,17 @@
 # STAT2610SEF_Group_Project/R/00_config.R
-# Configuration file for Music & Emotion Analysis project
+# Configuration file
 
 
 # API credentials
 API_CREDENTIALS <- list(
     genius = list(
-        # Fill in your genius API
+        # Fill in genius API
         client_id = "", 
         client_secret = "",
         redirect_uri = "http://localhost:1410/"
     ),
     youtube = list(
-        # Fill in your Google Cloud API
+        # Fill in Google Cloud API
         app_name = "STAT2610SEF-YouTube-Client",
         client_id = "",
         client_secret = "",
@@ -29,7 +29,7 @@ PROJECT_SETTINGS <- list(
 )
 
 # Define global file paths
-BASE_DIR <- "C:/Projects/R_GP/STAT2610SEF_Group_Project"
+BASE_DIR <- "."
 DATA_DIR <- file.path(BASE_DIR, "Data")
 LYRICS_DIR <- file.path(DATA_DIR, "Lyrics")
 COMMENTS_DIR <- file.path(DATA_DIR, "Comments")
