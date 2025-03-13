@@ -53,7 +53,8 @@ CheckAndInstallPackages <- function() {
     requiredPackages <- c(
         "tidyverse", "tidytext", "tuber", "rvest", "httr", "jsonlite",
         "textdata", "sentimentr", "wordcloud", "plotly", "knitr",
-        "rmarkdown", "dplyr", "stringr", "ggplot2", "scales"
+        "rmarkdown", "dplyr", "stringr", "ggplot2", "scales",
+        "ggrepel", "htmlwidgets"
     )
     
     # Check and install missing packages
