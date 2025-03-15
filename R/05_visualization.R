@@ -2,6 +2,51 @@
 # Visualization functions
 
 
+#' Get colors for all genres in dataset
+#'
+#' @param genres Vector of genre names
+#' @return Named vector of colors
+getGenreColors <- function(genres) {
+    # Get unique genres
+    all_genres <- unique(genres)
+    
+    # Create a color mapping
+    genre_colors <- rep(NA, length(all_genres))
+    names(genre_colors) <- all_genres
+    
+    # Use defined colors from GENRE_COLORS
+    for (genre in all_genres) {
+        if (genre %in% names(GENRE_COLORS)) {
+            genre_colors[genre] <- GENRE_COLORS[[genre]]
+        }
+    }
+    
+    # For any genres without defined colors, generate colors from a palette
+    missing_genres <- all_genres[is.na(genre_colors)]
+    if (length(missing_genres) > 0) {
+        if(!requireNamespace("RColorBrewer", quietly = TRUE)) {
+            install.packages("RColorBrewer")
+            library(RColorBrewer)
+        } else {
+            library(RColorBrewer)
+        }
+        
+        # Choose palette
+        if (length(missing_genres) <= 9) {
+            new_colors <- brewer.pal(max(3, length(missing_genres)), "Set1")
+        } else {
+            new_colors <- colorRampPalette(brewer.pal(9, "Set1"))(length(missing_genres))
+        }
+        
+        # Assign new colors
+        for (i in 1:length(missing_genres)) {
+            genre_colors[missing_genres[i]] <- new_colors[i]
+        }
+    }
+    
+    return(genre_colors)
+}
+
 #' Create word clouds for each genre
 #'
 #' Generates word cloud visualizations for the most common words in each genre.
@@ -170,13 +215,16 @@ CreateGenreComparisonPlots <- function(genre_sentiment) {
             arrange(positivity_ratio) %>%
             pull(MajorityGenre)
         
+        # Get colors for all genres in the dataset
+        all_genre_colors <- getGenreColors(genre_sentiment$MajorityGenre)
+        
         p1 <- ggplot(genre_sentiment, aes(x = factor(MajorityGenre, levels = genre_ordered), 
                                           y = positivity_ratio, 
                                           fill = MajorityGenre)) +
             geom_bar(stat = "identity", alpha = 0.8) +
             geom_hline(yintercept = 0.5, linetype = "dashed", color = "#616161") +
             coord_flip() +
-            scale_fill_manual(values = unlist(GENRE_COLORS)) +
+            scale_fill_manual(values = all_genre_colors) +
             labs(
                 title = "Positivity Ratio by Genre",
                 x = "Genre",
@@ -187,7 +235,7 @@ CreateGenreComparisonPlots <- function(genre_sentiment) {
                 plot.title = element_text(size = 16, face = "bold"),
                 axis.title = element_text(size = 12),
                 axis.text = element_text(size = 10),
-                legend.position = "none"
+                legend.position = "right" # Changed from "none" to show all genres
             )
         
         # Save plot
@@ -278,12 +326,15 @@ CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
     comparison_data <- comparison_data %>%
         filter(!is.na(lyrics_positivity) & !is.na(comments_positivity))
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(comparison_data$MajorityGenre)
+    
     # Create scatter plot
     p <- ggplot(comparison_data, aes(x = lyrics_positivity, y = comments_positivity, 
                                      color = MajorityGenre)) +
         geom_point(alpha = 0.7, size = 3) +
         geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "#616161") +
-        scale_color_manual(values = unlist(GENRE_COLORS)) +
+        scale_color_manual(values = all_genre_colors) +
         labs(
             title = "Lyrics vs. Comments Sentiment",
             subtitle = "Comparison of positivity ratio in lyrics and YouTube comments",
@@ -434,11 +485,14 @@ CreateYouTubeMetricsViz <- function(songData, lyrics_sentiment, commentsData) {
     # Set comment count to 0 for NA values
     combined_data$CommentCount[is.na(combined_data$CommentCount)] <- 0
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(combined_data$MajorityGenre)
+    
     # Create engagement vs sentiment plot
     p1 <- ggplot(combined_data, aes(x = positivity_ratio, y = CommentCount, 
                                     color = MajorityGenre, label = SongName)) +
         geom_point(size = 3, alpha = 0.7) +
-        scale_color_manual(values = unlist(GENRE_COLORS)) +
+        scale_color_manual(values = all_genre_colors) +
         labs(
             title = "YouTube Engagement vs Song Positivity",
             subtitle = "Do more positive songs generate more comments?",
@@ -505,12 +559,15 @@ CreateSentimentTrendViz <- function(songData, lyrics_sentiment) {
         # Only include years with enough songs
         filter(SongCount >= 1)
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(yearly_trends$MajorityGenre)
+    
     # Create trend visualization
     p <- ggplot(yearly_trends, aes(x = ReleaseYear, y = AvgPositivity, 
                                    color = MajorityGenre, group = MajorityGenre)) +
         geom_line(size = 1) +
         geom_point(size = 3, aes(size = SongCount)) +
-        scale_color_manual(values = unlist(GENRE_COLORS)) +
+        scale_color_manual(values = all_genre_colors) +
         labs(
             title = "Sentiment Trends in Music Over Time",
             subtitle = "How positivity in lyrics has changed by genre",
@@ -586,12 +643,15 @@ CreateLexicalDiversityEmotionPlot <- function(lyrics_tokens, lyrics_sentiment) {
         left_join(select(song_sentiment, SongID, EmotionalIntensity, positivity_ratio),
                   by = "SongID")
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(combined_data$MajorityGenre)
+    
     # Create visualization
     p <- ggplot(combined_data, aes(x = LexicalDiversity, y = EmotionalIntensity, 
                                    color = MajorityGenre, size = TotalWords,
                                    label = SongName)) +
         geom_point(alpha = 0.7) +
-        scale_color_manual(values = unlist(GENRE_COLORS)) +
+        scale_color_manual(values = all_genre_colors) +
         scale_size_continuous(range = c(3, 10)) +
         labs(
             title = "Lexical Diversity vs. Emotional Intensity",
@@ -605,7 +665,11 @@ CreateLexicalDiversityEmotionPlot <- function(lyrics_tokens, lyrics_sentiment) {
         theme(
             plot.title = element_text(size = 16, face = "bold"),
             plot.subtitle = element_text(size = 12),
-            axis.title = element_text(size = 12)
+            axis.title = element_text(size = 12),
+            # Make sure the legend is visible and sized appropriately
+            legend.position = "right",
+            legend.title = element_text(size = 10),
+            legend.text = element_text(size = 8)
         )
     
     # Save image
@@ -664,6 +728,9 @@ CreateEmotionRadarChart <- function(lyrics_sentiment) {
     # Get unique genres
     genres <- unique(genre_emotions$MajorityGenre)
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(genres)
+    
     # Create a radar chart for each genre
     for (genre in genres) {
         # Filter data for current genre
@@ -705,11 +772,15 @@ CreateEmotionRadarChart <- function(lyrics_sentiment) {
                 ry = y * scaled_intensity
             )
         
+        # Get genre color (use pre-defined or a default)
+        genre_color <- all_genre_colors[genre]
+        if(is.na(genre_color)) genre_color <- "#1976D2"  # Default to blue if color not found
+        
         # Create the plot
         p <- ggplot() +
             # Draw the polygon
             geom_polygon(data = radar_data, aes(x = rx, y = ry), 
-                         fill = unlist(GENRE_COLORS[genre]), alpha = 0.5) +
+                         fill = genre_color, alpha = 0.5) +
             # Draw the grid lines
             geom_path(data = radar_data, aes(x = x, y = y), 
                       color = "gray", linetype = "dashed") +
@@ -791,11 +862,14 @@ CreateSentimentMap <- function(lyrics_sentiment) {
             arousal_norm = scale(arousal)[,1]
         )
     
+    # Get colors for all genres in the dataset
+    all_genre_colors <- getGenreColors(song_sentiment$MajorityGenre)
+    
     # Create the map visualization
     p <- ggplot(song_sentiment, aes(x = valence_norm, y = arousal_norm, 
                                     color = MajorityGenre, label = SongName)) +
         geom_point(size = 3, alpha = 0.7) +
-        scale_color_manual(values = unlist(GENRE_COLORS)) +
+        scale_color_manual(values = all_genre_colors) +
         labs(
             title = "Emotional Landscape of Songs",
             subtitle = "Positioned by valence (positive/negative) and arousal (energy)",
