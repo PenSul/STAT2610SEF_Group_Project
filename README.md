@@ -9,6 +9,7 @@ and generates visualizations of the results.
 - R (version 4.0.0 or higher recommended)
 - RStudio (recommended for easier execution)
 - Internet connection
+- Python (for lyrics scraping with lyricsgenius)
 - Google account (provided below)
 - Access to Genius API (via the Google account)
 
@@ -47,13 +48,33 @@ install.packages(c(
   "tidyverse", "tidytext", "tuber", "rvest", "httr", "jsonlite",
   "textdata", "sentimentr", "wordcloud", "plotly", "knitr",
   "rmarkdown", "dplyr", "stringr", "ggplot2", "scales", 
-  "ggrepel", "htmlwidgets", "RColorBrewer"
+  "ggrepel", "htmlwidgets", "RColorBrewer", "reticulate"
 ))
 ```
 
 *Note: This step may take several minutes. Some packages might prompt you to select a CRAN mirror - choose one close to your location.*
 
-### Step 4: Prepare Input Data
+### Step 4: Install Python Dependencies (for Lyrics Scraping)
+
+For better lyrics scraping results, install the lyricsgenius Python package. Open Command Prompt (CMD) and run:
+
+```
+pip install lyricsgenius
+```
+
+If you have multiple Python installations, you may need to use:
+
+```
+python -m pip install lyricsgenius
+```
+
+Verify installation with:
+
+```
+pip list | findstr lyricsgenius
+```
+
+### Step 5: Prepare Input Data
 
 1. Verify that the `song_list.csv` file exists in the project root directory
    - This file should contain the songs to analyze with columns:
@@ -63,7 +84,7 @@ install.packages(c(
      - ArtistName
      - SongLink (YouTube URL)
 
-### Step 5: Run the Analysis
+### Step 6: Run the Analysis
 
 1. Open the project in RStudio
 
@@ -82,7 +103,7 @@ install.packages(c(
 
 7. Wait for the analysis to complete (this may take several minutes depending on the number of songs)
 
-### Step 6: View Results
+### Step 7: View Results
 
 The script will create several directories with the results:
 
@@ -95,7 +116,15 @@ The script will create several directories with the results:
   - PNG files for static visualizations
   - HTML files for interactive visualizations
 
-Open the visualizations in your browser to explore the analysis results interactively.
+Open the visualizations in your browser to explore the analysis results interactively. The project now includes a new emotional impact visualization that directly shows how different genres affect listener mood.
+
+## Key Features
+
+- **Lyrics Scraping**: Uses both direct web scraping and the Python lyricsgenius library for reliable lyrics collection
+- **Sentiment Analysis**: Analyzes emotional content in lyrics and YouTube comments
+- **Genre Comparison**: Identifies emotional patterns across different music genres
+- **Emotional Impact Analysis**: New visualization showing how genres emotionally impact listeners
+- **Interactive Visualizations**: Includes interactive plots for exploring emotional landscapes
 
 ## Troubleshooting
 
@@ -111,6 +140,14 @@ If you encounter authentication problems:
    yt_oauth(API_CREDENTIALS$youtube$client_id, API_CREDENTIALS$youtube$client_secret)
    ```
 
+### Python Integration Issues
+
+If you encounter problems with lyricsgenius:
+
+1. Make sure Python is installed and in your system PATH
+2. Verify lyricsgenius is installed with `pip list | findstr lyricsgenius`
+3. If problems persist, try installing lyricsgenius in a different Python environment
+
 ### Package Loading Errors
 
 If you get errors about missing packages:
@@ -125,6 +162,14 @@ If you get errors about missing packages:
    ```r
    install.packages("package_name")
    ```
+
+### Non-English Song Issues
+
+If non-English songs aren't being processed correctly:
+
+1. The updated code includes better handling for non-English titles and artists
+2. In some cases, you may need to provide romanized versions of song titles/artists
+3. For Chinese, Korean, or Japanese songs, lyrics retrieval may be less reliable
 
 ### Data Collection Issues
 
