@@ -1,10 +1,11 @@
 # STAT2610SEF_Group_Project/R/04_sentiment_analysis.R
-# Sentiment analysis functions
+# Sentiment analysis functions - where the magic happens
 
 
 #' Analyze sentiment of lyrics using NRC lexicon
 #'
 #' Calculate sentiment scores for lyrics text
+#' This is the heart of the project - don't fuck it up
 #'
 #' @param lyrics_tokens data.frame with processed lyrics tokens
 #' @param lexicon character name of sentiment lexicon to use
@@ -20,7 +21,7 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
     } else if (lexicon == "loughran") {
         sentiment_lex <- get_sentiments("loughran")
     } else {
-        stop("Invalid lexicon specified")
+        stop("Invalid lexicon specified. WTF are you using?")
     }
     
     # Join tokens with sentiment lexicon
@@ -150,6 +151,7 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
 #' Analyze sentiment of comments using NRC lexicon
 #'
 #' Calculate sentiment scores for YouTube comments
+#' People say some wild shit in YouTube comments
 #'
 #' @param comment_tokens data.frame with processed comment tokens
 #' @param lexicon character name of sentiment lexicon to use
@@ -157,7 +159,7 @@ AnalyzeLyricsSentiment <- function(lyrics_tokens, lexicon = PROJECT_SETTINGS$sen
 AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$sentiment_lexicon) {
     # Check if comment data exist
     if (is.null(comment_tokens) || nrow(comment_tokens) == 0) {
-        warning("No comment data available for sentiment analysis.")
+        warning("No comment data available for sentiment analysis. Well, that's a bummer.")
         return(NULL)
     }
     
@@ -171,7 +173,7 @@ AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$
     } else if (lexicon == "loughran") {
         sentiment_lex <- get_sentiments("loughran")
     } else {
-        stop("Invalid lexicon specified. Use 'nrc', 'bing', 'afinn', or 'loughran'")
+        stop("Invalid lexicon specified. Use 'nrc', 'bing', 'afinn', or 'loughran'. Don't get creative here.")
     }
     
     # Join tokens with sentiment lexicon
@@ -268,6 +270,7 @@ AnalyzeCommentsSentiment <- function(comment_tokens, lexicon = PROJECT_SETTINGS$
 #' Compare sentiment across genres
 #'
 #' Aggregates sentiment scores by genre
+#' See which genres are happy and which ones are depressing as hell
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @return data.frame with genre sentiment scores
@@ -289,6 +292,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
 #' Compare lyrics and comments sentiment
 #'
 #' Compares sentiment in lyrics vs YouTube comments
+#' Do listeners feel what the artist intended? Let's find out.
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @param comments_sentiment result from AnalyzeCommentsSentiment()
@@ -296,7 +300,7 @@ CompareSentimentByGenre <- function(lyrics_sentiment) {
 CompareLyricsAndComments <- function(lyrics_sentiment, comments_sentiment) {
     # Check if comment data exists
     if (is.null(comments_sentiment)) {
-        warning("No comment sentiment data available for comparison.")
+        warning("No comment sentiment data available for comparison. Can't do shit with nothing.")
         return(NULL)
     }
     

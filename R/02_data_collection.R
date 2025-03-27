@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/02_data_collection.R
-# Data collection functions
+# Data collection functions - where we beg APIs for data
 
 
 source("R/00_config.R")
@@ -7,13 +7,14 @@ source("R/genius_auth.R")
 #' Read song list from CSV file
 #'
 #' Read song data from a CSV file
+#' The most basic shit we need to get started
 #'
 #' @return data.frame containing song information with columns:
 #' MajorityGenre, MinorityGenre, SongName, ArtistName, SongLink, SongID
 ReadSongList <- function() {
     # Check if file exists
     if (!file.exists(PROJECT_SETTINGS$csv_file_path)) {
-        stop("Song list CSV file not found at: ", PROJECT_SETTINGS$csv_file_path)
+        stop("Song list CSV file not found at: ", PROJECT_SETTINGS$csv_file_path, " - You're screwed without data.")
     }
     
     # Read data from CSV file
@@ -35,7 +36,7 @@ ReadSongList <- function() {
         mutate(SongID = row_number())
     
     # Display summary of loaded data
-    cat("Loaded", nrow(songData), "songs from CSV file\n")
+    cat("Loaded", nrow(songData), "songs from CSV file. Let's hope they're good ones.\n")
     return(songData)
 }
 
@@ -43,7 +44,7 @@ ReadSongList <- function() {
 #'
 #' @return List containing API tokens
 SetupAPITokens <- function() {
-    cat("Setting up API authentication...\n")
+    cat("Setting up API authentication... pray it works.\n")
     
     # Initialize tokens list
     tokens <- list()
@@ -52,7 +53,7 @@ SetupAPITokens <- function() {
     if (!is.null(API_CREDENTIALS$genius$client_id) && 
         !is.null(API_CREDENTIALS$genius$client_secret)) {
         
-        cat("Authenticating with Genius API...\n")
+        cat("Authenticating with Genius API... fingers crossed.\n")
         tokens$genius <- tryCatch({
             genius_oauth(
                 client_id = API_CREDENTIALS$genius$client_id,
@@ -60,18 +61,18 @@ SetupAPITokens <- function() {
                 redirect_uri = API_CREDENTIALS$genius$redirect_uri %||% "http://localhost:1410/"
             )
         }, error = function(e) {
-            warning("Genius API authentication failed: ", e$message)
+            warning("Genius API authentication failed: ", e$message, " - Fucking APIs.")
             NULL
         })
     } else {
-        warning("Genius API credentials not configured.")
+        warning("Genius API credentials not configured. Did you forget to add them?")
     }
     
     # YouTube API setup
     if (!is.null(API_CREDENTIALS$youtube$client_id) && 
         !is.null(API_CREDENTIALS$youtube$client_secret)) {
         
-        cat("Authenticating with YouTube API...\n")
+        cat("Authenticating with YouTube API... this better work.\n")
         tokens$youtube <- tryCatch({
             yt_oauth(
                 app_id = API_CREDENTIALS$youtube$client_id,
@@ -80,11 +81,11 @@ SetupAPITokens <- function() {
             )
             TRUE
         }, error = function(e) {
-            warning("YouTube API authentication failed: ", e$message)
+            warning("YouTube API authentication failed: ", e$message, " - Google hates us.")
             FALSE
         })
     } else {
-        warning("YouTube API credentials not configured.")
+        warning("YouTube API credentials not configured. Good luck with that.")
     }
     return(tokens)
 }
@@ -92,6 +93,7 @@ SetupAPITokens <- function() {
 #' Extract YouTube video ID from URL
 #'
 #' Parses a YouTube URL to extract the video ID.
+#' Because YouTube's URLs are a damn mess
 #'
 #' @param url Character string of the YouTube URL
 #' @return Character string of the video ID or NA if not found
@@ -115,6 +117,7 @@ ExtractYouTubeID <- function(url) {
 #' Collect song lyrics using Genius API
 #'
 #' Fetches lyrics for each song in the dataset
+#' Deals with Genius's crappy API so you don't have to
 #'
 #' @param songData data.frame containing song information
 #' @param genius_token OAuth token from SetupAPITokens()
@@ -144,7 +147,7 @@ CollectLyrics <- function(songData, genius_token) {
             artist <- gsub("\\s*\\(ft\\..*\\)", "", artist)
         }
         
-        # Logg
+        # Log
         cat(sprintf("Fetching lyrics for: %s by %s (%d of %d)\n", 
                     song, artist, i, nrow(songData)))
         
@@ -262,6 +265,7 @@ CollectLyrics <- function(songData, genius_token) {
 #' Collect YouTube comments
 #'
 #' Fetches comments for each song with a YouTube link, sorted by likes.
+#' Hope you're not hitting rate limits!
 #'
 #' @param songData data.frame containing song information
 #' @param maxComments Integer maximum number of comments to collect per song
@@ -282,7 +286,7 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
     
     # Check if tuber is loaded and authenticated
     if (!requireNamespace("tuber", quietly = TRUE)) {
-        warning("Package 'tuber' is not available. Cannot collect comments.")
+        warning("Package 'tuber' is not available. Can't collect comments. We're screwed.")
         return(commentData)
     }
     
@@ -293,7 +297,7 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
         videoId <- ExtractYouTubeID(videoUrl)
         
         if (is.na(videoId)) {
-            cat(sprintf("Skipping song %d: No valid YouTube URL\n", i))
+            cat(sprintf("Skipping song %d: No valid YouTube URL. Moving on.\n", i))
             next
         }
         
@@ -338,7 +342,7 @@ CollectYouTubeComments <- function(songData, maxComments = PROJECT_SETTINGS$max_
                 cat(sprintf("Saved %d comments for video %s\n", 
                             nrow(songComments), videoId))
             } else {
-                cat(sprintf("No comments found for video %s\n", videoId))
+                cat(sprintf("No comments found for video %s. Lame.\n", videoId))
             }
         }, error = function(e) {
             cat(sprintf("Error fetching comments for video %s: %s\n", 

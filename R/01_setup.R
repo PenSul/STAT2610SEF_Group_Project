@@ -1,10 +1,11 @@
 # STAT2610SEF_Group_Project/R/01_setup.R
-# Setup functions
+# Setup functions - boring but necessary shit
 
 
 #' Create necessary directories for the project
 #'
 #' Creates base directories for data storage if they don't exist
+#' This is just housekeeping crap but we need it
 #'
 #' @return TRUE if successful
 CreateDirectories <- function() {
@@ -47,6 +48,7 @@ CreateDirectories <- function() {
 #' Check required packages and install if missing
 #'
 #' Verifies that all required packages are installed
+#' Will save your ass when you forget what packages you need
 #'
 #' @return TRUE if all packages are installed successfully
 CheckAndInstallPackages <- function() {
@@ -54,7 +56,7 @@ CheckAndInstallPackages <- function() {
         "tidyverse", "tidytext", "tuber", "rvest", "httr", "jsonlite",
         "textdata", "sentimentr", "wordcloud", "plotly", "knitr",
         "rmarkdown", "dplyr", "stringr", "ggplot2", "scales",
-        "ggrepel", "htmlwidgets"
+        "ggrepel", "htmlwidgets", "RColorBrewer"
     )
     
     # Check and install missing packages
@@ -63,7 +65,7 @@ CheckAndInstallPackages <- function() {
         cat("Installing missing packages:", paste(newPackages, collapse = ", "), "\n")
         install.packages(newPackages, dependencies = TRUE)
     } else {
-        cat("All required packages are installed.\n")
+        cat("All required packages are installed. You're not totally screwed!\n")
     }
     
     # Load all packages
@@ -76,6 +78,7 @@ CheckAndInstallPackages <- function() {
 #' Download and prepare sentiment lexicons
 #'
 #' Downloads sentiment lexicons for text analysis
+#' The boring foundation for all the interesting shit later
 #'
 #' @return list of loaded lexicons
 PrepareTextData <- function() {
@@ -87,7 +90,7 @@ PrepareTextData <- function() {
         lexicons$nrc <- get_sentiments("nrc")
         cat("NRC sentiment lexicon loaded.\n")
     }, error = function(e) {
-        warning("Failed to load NRC lexicon: ", e$message)
+        warning("Failed to load NRC lexicon: ", e$message, " - We're so screwed now.")
     })
     
     # Get AFINN lexicon
@@ -95,7 +98,7 @@ PrepareTextData <- function() {
         lexicons$afinn <- get_sentiments("afinn")
         cat("AFINN sentiment lexicon loaded.\n")
     }, error = function(e) {
-        warning("Failed to load AFINN lexicon: ", e$message)
+        warning("Failed to load AFINN lexicon: ", e$message, " - Damn it.")
     })
     
     # Get Bing lexicon
@@ -103,7 +106,7 @@ PrepareTextData <- function() {
         lexicons$bing <- get_sentiments("bing")
         cat("Bing sentiment lexicon loaded.\n")
     }, error = function(e) {
-        warning("Failed to load Bing lexicon: ", e$message)
+        warning("Failed to load Bing lexicon: ", e$message, " - Microsoft sucks anyway.")
     })
     
     # Get Loughran lexicon
@@ -111,7 +114,7 @@ PrepareTextData <- function() {
         lexicons$loughran <- get_sentiments("loughran")
         cat("Loughran sentiment lexicon loaded.\n")
     }, error = function(e) {
-        warning("Failed to load Loughran lexicon: ", e$message)
+        warning("Failed to load Loughran lexicon: ", e$message, " - Who even uses this one?")
     })
     return(lexicons)
 }
@@ -119,6 +122,7 @@ PrepareTextData <- function() {
 #' Get stopwords list
 #'
 #' Combines standard stopwords with music-related stopwords
+#' All the words we don't give a shit about
 #'
 #' @return character vector of stopwords
 GetStopwords <- function() {

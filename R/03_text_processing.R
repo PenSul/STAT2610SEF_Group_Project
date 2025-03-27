@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/03_text_processing.R
-# Text processing functions
+# Text processing functions - where we clean up this mess
 
 
 #' Processes raw lyrics text
@@ -21,7 +21,7 @@ ProcessLyrics <- function(lyricsData, stopwords = GetStopwords()) {
     cleaned_tokens <- lyrics_tokens %>%
         anti_join(data.frame(word = stopwords), by = "word") %>%
         filter(!grepl("^\\d+$", word)) %>%      # Remove numbers
-        filter(nchar(word) > 2) %>%             # Remove short words
+        filter(nchar(word) > 2) %>%             # Remove short words - because "a" & "an" are useless
         filter(!grepl("[^a-zA-Z]", word))       # Keep only alphabetic words
     
     # Count word frequencies
@@ -38,6 +38,7 @@ ProcessLyrics <- function(lyricsData, stopwords = GetStopwords()) {
 #' Clean and tokenize comments text
 #'
 #' Processes raw comments text
+#' YouTube comments are a cesspool, but we'll clean them up
 #'
 #' @param commentsData data.frame containing comments information
 #' @param stopwords character vector of stopwords to remove
@@ -45,7 +46,7 @@ ProcessLyrics <- function(lyricsData, stopwords = GetStopwords()) {
 ProcessComments <- function(commentsData, stopwords = GetStopwords()) {
     # Check if comments data exists
     if (is.null(commentsData) || nrow(commentsData) == 0) {
-        warning("No comments data available for processing.")
+        warning("No comments data available for processing. That sucks.")
         return(NULL)
     }
     
@@ -105,6 +106,7 @@ CalculateGenreTFIDF <- function(lyrics_tokens) {
 #' Extract n-grams from lyrics
 #'
 #' Creates bigrams or trigrams from lyrics text.
+#' Because sometimes one word isn't enough to get the real meaning
 #'
 #' @param lyricsData data.frame containing lyrics information
 #' @param n integer: 2 for bigrams, 3 for trigrams
@@ -184,6 +186,6 @@ ExtractNgrams <- function(lyricsData, n = 2, stopwords = GetStopwords()) {
         
         return(trigrams_united)
     } else {
-        stop("n must be 2 or 3")
+        stop("n must be 2 or 3. What the hell are you trying to do?")
     }
 }

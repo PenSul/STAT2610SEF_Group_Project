@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/05_visualization.R
-# Visualization functions
+# Visualization functions - make this shit look pretty!
 
 
 #' Get colors for all genres in dataset
@@ -50,6 +50,7 @@ getGenreColors <- function(genres) {
 #' Create word clouds for each genre
 #'
 #' Generates word cloud visualizations for the most common words in each genre.
+#' Because word clouds are cool, even if they're a bit basic
 #'
 #' @param lyrics_tokens data.frame with processed lyrics tokens
 #' @param min_freq minimum frequency for words to include
@@ -70,7 +71,7 @@ CreateGenreWordClouds <- function(lyrics_tokens,
         
         # Skip if not enough words
         if (nrow(genre_words) < 10) {
-            warning("Not enough words for genre: ", genre)
+            warning("Not enough words for genre: ", genre, ". Weak dataset, bro.")
             next
         }
         
@@ -98,6 +99,7 @@ CreateGenreWordClouds <- function(lyrics_tokens,
 #' Create sentiment distribution plots
 #'
 #' Generate visualization of sentiment distribution
+#' How happy or depressing is this music, anyway?
 #'
 #' @param sentiment_data result from sentiment analysis functions
 #' @param data_type character: "Lyrics" or "Comments"
@@ -200,7 +202,8 @@ CreateSentimentPlots <- function(sentiment_data, data_type = "Lyrics") {
 
 #' Create genre comparison plots
 #'
-#' Generate visualizatio comparing sentiment across genres
+#' Generate visualization comparing sentiment across genres
+#' Let's see which genres are depressing as hell
 #'
 #' @param genre_sentiment result from CompareSentimentByGenre()
 #' @return NULL (saves plots to files)
@@ -318,7 +321,7 @@ CreateGenreComparisonPlots <- function(genre_sentiment) {
 CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
     # Check if comparison data exist
     if (is.null(comparison_data)) {
-        warning("No comparison data available for visualization.")
+        warning("No comparison data available for visualization. Can't compare nothing with nothing.")
         return(NULL)
     }
     
@@ -373,6 +376,7 @@ CreateLyricsCommentsComparisonPlot <- function(comparison_data) {
 #' Create an emotion heatmap across genres
 #'
 #' Generate a heatmap showing the intensity of different emotions across music genres
+#' Hot and cold emotions - see the patterns at a glance
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @return plotly object (saves plot to file)
@@ -442,6 +446,7 @@ CreateEmotionHeatmap <- function(lyrics_sentiment) {
 #'
 #' Generates visualization comparing YouTube metrics
 #' to explore relationships between engagement and emotion.
+#' Do emotional songs get more comments? Let's find out.
 #'
 #' @param songData data frame with song information including YouTube metrics
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
@@ -452,7 +457,7 @@ CreateYouTubeMetricsViz <- function(songData, lyrics_sentiment, commentsData) {
     has_youtube_metrics <- all(c("SongLink") %in% colnames(songData))
     
     if (!has_youtube_metrics) {
-        warning("YouTube metrics visualization requires video data")
+        warning("YouTube metrics visualization requires video data. What are you even doing?")
         return(NULL)
     }
     
@@ -526,6 +531,7 @@ CreateYouTubeMetricsViz <- function(songData, lyrics_sentiment, commentsData) {
 #'
 #' Analyzes how sentiment trends across years for different genres
 #' Requires release year data.
+#' Has music gotten more depressing over time? Let's see.
 #'
 #' @param songData data frame with song information including release year
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
@@ -603,6 +609,7 @@ CreateSentimentTrendViz <- function(songData, lyrics_sentiment) {
 #'
 #' Compares lexical diversity (unique words) with emotional intensity
 #' to see if more diverse lyrics correlate with stronger emotions
+#' Do complex lyrics = complex emotions? Let's find out.
 #'
 #' @param lyrics_tokens data frame with processed lyrics tokens
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
@@ -690,6 +697,7 @@ CreateLexicalDiversityEmotionPlot <- function(lyrics_tokens, lyrics_sentiment) {
 #' Create emotion radar chart for genre comparison
 #'
 #' Generate radar charts to compare the emotional profiles of different genres
+#' Spider charts look cool and make your report look fancy AF
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @return NULL (saves plots to files)
@@ -701,7 +709,7 @@ CreateEmotionRadarChart <- function(lyrics_sentiment) {
     has_emotions <- all(c("joy", "sadness", "anger", "fear") %in% colnames(song_sentiment))
     
     if (!has_emotions) {
-        warning("Radar chart requires NRC emotion categories")
+        warning("Radar chart requires NRC emotion categories. Can't make cool radar charts without emotions.")
         return(NULL)
     }
     
@@ -832,6 +840,7 @@ CreateEmotionRadarChart <- function(lyrics_sentiment) {
 #'
 #' Generates a 2D map of songs (e.g., positive/negative vs. high/low energy)
 #' to visualize the emotional landscape
+#' Like a mood map for music - see where songs live emotionally
 #'
 #' @param lyrics_sentiment result from AnalyzeLyricsSentiment()
 #' @return NULL (saves plots to files)
@@ -910,4 +919,214 @@ CreateSentimentMap <- function(lyrics_sentiment) {
     )
     cat("Created sentiment landscape map at", filename, "\n")
     return(NULL)
+}
+
+#' Create Emotional Impact Comparison Chart
+#'
+#' Generates a clear visual comparison of how different genres emotionally impact listeners
+#' Shows both lyrics sentiment and comment sentiment side by side for each genre
+#' This visualization directly addresses our project goal of understanding the emotional impact of music
+#'
+#' @param lyrics_sentiment Result from AnalyzeLyricsSentiment()
+#' @param comments_sentiment Result from AnalyzeCommentsSentiment()
+#' @return NULL (saves plots to files)
+CreateEmotionalImpactChart <- function(lyrics_sentiment, comments_sentiment) {
+    # Check if we have comment sentiment data
+    if (is.null(comments_sentiment)) {
+        warning("No comment sentiment data available. Can't measure emotional impact without listener feedback.")
+        return(NULL)
+    }
+    
+    # Extract song-level sentiment for lyrics
+    lyrics_data <- lyrics_sentiment$song_sentiment %>%
+        select(SongID, SongName, ArtistName, MajorityGenre, positivity_ratio) %>%
+        rename(lyrics_positivity = positivity_ratio)
+    
+    # Extract song-level sentiment for comments
+    comment_data <- comments_sentiment$song_sentiment %>%
+        select(SongID, positivity_ratio) %>%
+        rename(comments_positivity = positivity_ratio)
+    
+    # Combine the data
+    impact_data <- lyrics_data %>%
+        left_join(comment_data, by = "SongID") %>%
+        filter(!is.na(comments_positivity)) # Remove songs without comments
+    
+    # Calculate emotional impact metrics
+    impact_data <- impact_data %>%
+        mutate(
+            emotional_resonance = abs(lyrics_positivity - comments_positivity),
+            emotional_alignment = 1 - emotional_resonance,
+            impact_direction = ifelse(comments_positivity > lyrics_positivity, 
+                                      "More Positive Response", "More Negative Response"),
+            impact_strength = case_when(
+                emotional_resonance < 0.2 ~ "Low Impact (High Alignment)",
+                emotional_resonance < 0.4 ~ "Moderate Impact",
+                TRUE ~ "High Impact (Low Alignment)"
+            )
+        )
+    
+    # Aggregate by genre
+    genre_impact <- impact_data %>%
+        group_by(MajorityGenre) %>%
+        summarize(
+            avg_lyrics_positivity = mean(lyrics_positivity, na.rm = TRUE),
+            avg_comments_positivity = mean(comments_positivity, na.rm = TRUE),
+            avg_emotional_resonance = mean(emotional_resonance, na.rm = TRUE),
+            avg_emotional_alignment = mean(emotional_alignment, na.rm = TRUE),
+            song_count = n(),
+            .groups = 'drop'
+        ) %>%
+        # Calculate impact direction per genre
+        mutate(
+            impact_direction = ifelse(avg_comments_positivity > avg_lyrics_positivity, 
+                                      "Listeners respond more positively", 
+                                      "Listeners respond more negatively"),
+            # Convert to long format for side-by-side bars
+            .groups = 'drop'
+        )
+    
+    # Reshape for plotting
+    genre_impact_long <- genre_impact %>%
+        pivot_longer(
+            cols = c(avg_lyrics_positivity, avg_comments_positivity),
+            names_to = "metric",
+            values_to = "value"
+        ) %>%
+        mutate(
+            metric_label = case_when(
+                metric == "avg_lyrics_positivity" ~ "Lyrics Sentiment",
+                metric == "avg_comments_positivity" ~ "Listener Response",
+                TRUE ~ metric
+            )
+        )
+    
+    # Get colors for genres
+    all_genre_colors <- getGenreColors(genre_impact$MajorityGenre)
+    
+    # Create impact comparison chart
+    p1 <- ggplot(genre_impact_long, 
+                 aes(x = reorder(MajorityGenre, -value), y = value, fill = metric_label)) +
+        geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+        geom_text(aes(label = sprintf("%.2f", value)), 
+                  position = position_dodge(width = 0.9), 
+                  vjust = -0.5, size = 3) +
+        geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray50") +
+        scale_fill_manual(values = c("Lyrics Sentiment" = "#4CAF50", "Listener Response" = "#2196F3")) +
+        labs(
+            title = "Emotional Impact of Music Genres on Listeners",
+            subtitle = "Comparing the sentiment in lyrics vs. how listeners respond in comments",
+            x = "Genre",
+            y = "Positivity Ratio",
+            fill = ""
+        ) +
+        theme_minimal() +
+        theme(
+            plot.title = element_text(size = 16, face = "bold"),
+            plot.subtitle = element_text(size = 12),
+            axis.title = element_text(size = 12),
+            axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "top"
+        )
+    
+    # Create emotional gap chart (showing the difference)
+    genre_impact$gap <- genre_impact$avg_comments_positivity - genre_impact$avg_lyrics_positivity
+    
+    p2 <- ggplot(genre_impact, aes(x = reorder(MajorityGenre, gap), y = gap, fill = gap)) +
+        geom_bar(stat = "identity", alpha = 0.8) +
+        geom_text(aes(label = sprintf("%+.2f", gap), 
+                      y = ifelse(gap > 0, gap/2, gap/2)),
+                  color = "white", fontface = "bold") +
+        geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+        scale_fill_gradient2(low = "#F44336", mid = "#BDBDBD", high = "#4CAF50", midpoint = 0) +
+        labs(
+            title = "Emotional Gap: How Listener Sentiment Differs from Lyrics",
+            subtitle = "Positive values = listeners respond more positively than lyrics sentiment",
+            x = "Genre",
+            y = "Emotional Response Gap (Listener - Lyrics)",
+            fill = "Gap"
+        ) +
+        theme_minimal() +
+        theme(
+            plot.title = element_text(size = 16, face = "bold"),
+            plot.subtitle = element_text(size = 12),
+            axis.title = element_text(size = 12),
+            axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.position = "right"
+        )
+    
+    # Add annotations
+    for (i in 1:nrow(genre_impact)) {
+        genre <- genre_impact$MajorityGenre[i]
+        gap <- genre_impact$gap[i]
+        
+        if (gap > 0.1) {
+            p2 <- p2 + annotate("text", 
+                                x = which(levels(reorder(genre_impact$MajorityGenre, genre_impact$gap)) == genre), 
+                                y = gap + 0.05, 
+                                label = "Uplifting effect", 
+                                color = "#4CAF50",
+                                fontface = "bold",
+                                size = 3)
+        } else if (gap < -0.1) {
+            p2 <- p2 + annotate("text", 
+                                x = which(levels(reorder(genre_impact$MajorityGenre, genre_impact$gap)) == genre), 
+                                y = gap - 0.05, 
+                                label = "Depressing effect", 
+                                color = "#F44336",
+                                fontface = "bold",
+                                size = 3)
+        }
+    }
+    
+    # Save plots
+    filename1 <- file.path(VISUALS_DIR, "genre_emotional_impact.png")
+    ggsave(filename1, p1, width = 12, height = 8, dpi = 300)
+    
+    filename2 <- file.path(VISUALS_DIR, "emotional_response_gap.png")
+    ggsave(filename2, p2, width = 12, height = 8, dpi = 300)
+    
+    # Create interactive versions
+    p1_interactive <- ggplotly(p1)
+    p2_interactive <- ggplotly(p2)
+    
+    htmlwidgets::saveWidget(
+        p1_interactive, 
+        file.path(VISUALS_DIR, "genre_emotional_impact_interactive.html"),
+        selfcontained = TRUE
+    )
+    
+    htmlwidgets::saveWidget(
+        p2_interactive, 
+        file.path(VISUALS_DIR, "emotional_response_gap_interactive.html"),
+        selfcontained = TRUE
+    )
+    
+    cat("Created emotional impact charts at", filename1, "and", filename2, "\n")
+    
+    # Return insights about emotional impact
+    impact_insights <- genre_impact %>%
+        arrange(desc(abs(gap))) %>%
+        mutate(
+            insight = case_when(
+                gap > 0.1 ~ paste(MajorityGenre, "music has an uplifting effect: listeners respond more positively than the lyrics suggest"),
+                gap < -0.1 ~ paste(MajorityGenre, "music has a depressing effect: listeners respond more negatively than the lyrics suggest"),
+                TRUE ~ paste(MajorityGenre, "music creates a matching emotional response: listeners respond similarly to the lyrics sentiment")
+            )
+        )
+    
+    # Print insights
+    cat("\nEMOTIONAL IMPACT INSIGHTS:\n")
+    for (i in 1:nrow(impact_insights)) {
+        cat(paste0(i, ". ", impact_insights$insight[i]), "\n")
+    }
+    
+    # Save insights
+    writeLines(
+        c("EMOTIONAL IMPACT INSIGHTS:",
+          sapply(1:nrow(impact_insights), function(i) paste0(i, ". ", impact_insights$insight[i]))),
+        file.path(OUTPUT_DIR, "emotional_impact_insights.txt")
+    )
+    
+    return(invisible(NULL))
 }

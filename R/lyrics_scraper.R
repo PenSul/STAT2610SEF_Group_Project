@@ -143,29 +143,24 @@ ScrapeLyrics <- function(artist, title) {
 #' @param title Song title
 #' @return Character string of lyrics or NA if not found
 ScrapeLyricsViaLyricsGenius <- function(artist, title) {
-    # Check if the package is available
     if (!requireNamespace("reticulate", quietly = TRUE)) {
-        cat("Package 'reticulate' isnt install. Installing now...\n")
+        cat("Package 'reticulate' isn't installed. Installing now...\n")
         install.packages("reticulate")
     }
     
     library(reticulate)
     
-    # Try to set up Python environment
     tryCatch({
-        # Initialize Python
-        reticulate::use_python(Sys.which("python"), required = TRUE)
-        
-        # Check if lyricsgenius is installed in Python
-        lyricsgenius_available <- reticulate::py_module_available("lyricsgenius")
-        
-        if (!lyricsgenius_available) {
-            cat("Python package 'lyricsgenius' not found. Installing...\n")
-            reticulate::py_install("lyricsgenius")
+        # Skip installation checks and just try to import the module
+        cat("Checking for lyricsgenius...\n")
+        if (!py_module_available("lyricsgenius")) {
+            cat("Python module 'lyricsgenius' not found despite manual installation.\n")
+            cat("Please install it via: pip install lyricsgenius\n")
+            return(NA)
         }
         
-        # Import the lyricsgenius package
-        lyricsgenius <- reticulate::import("lyricsgenius")
+        # Import the package
+        lyricsgenius <- import("lyricsgenius")
         
         # Create Genius API object
         genius <- lyricsgenius$Genius(API_CREDENTIALS$genius$client_id)

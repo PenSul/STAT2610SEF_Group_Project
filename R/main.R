@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/main.R
-# Main script
+# Main script - where the magic happens
 
 
 library(tidyverse)
@@ -26,80 +26,80 @@ source("R/05_visualization.R")
 source("R/lyrics_scraper.R")
 source("R/youtube_scraper.R")
 
-# Pre-Steo: Create necessary directories and check packages
-cat("Setting up project environment...\n")
+# Pre-Step: Create necessary directories and check packages
+cat("Setting up project environment... fingers crossed\n")
 CreateDirectories()
 CheckAndInstallPackages()
 
 # Step 1: Read song list from CSV
-cat("Reading song data...\n")
+cat("Reading song data... hope it's not empty\n")
 songData <- ReadSongList()
 
 # Step 2: Setup API authentication
-cat("Setting up API authentication...\n")
+cat("Setting up API authentication... please work, please work\n")
 apiTokens <- SetupAPITokens()
 
 # Step 3: Collect lyrics data (trying multiple methods)
-cat("Collecting lyrics data...\n")
+cat("Collecting lyrics data... this might take a while, grab some coffee\n")
 lyricsData <- CollectLyricsDirectly(songData)
 
 # Still Step 3 after collect: If no lyrics found with scraping, use manual sample lyrics for testing
 if (nrow(lyricsData) == 0 || !any(lyricsData$LyricsStatus == "found")) {
-    cat("No lyrics found via scraping. Using sample lyrics for testing purposes...\n")
+    cat("No lyrics found via scraping. Using sample lyrics for testing purposes... fake it till you make it\n")
     lyricsData <- AddManualLyrics(songData)
 }
 
 # Step 4: Collect YouTube comments (using direct API key calls)
-cat("Collecting YouTube comments...\n")
+cat("Collecting YouTube comments... pray to the YouTube gods\n")
 commentsData <- CollectYouTubeCommentsWithAPIKey(songData, PROJECT_SETTINGS$max_comments)
 
 # Only continue if have some lyrics
 if (nrow(lyricsData) > 0 && any(lyricsData$LyricsStatus == "found")) {
     # Step 5: Process text data
-    cat("Processing lyrics text...\n")
+    cat("Processing lyrics text... cleaning up this mess\n")
     stopwords <- GetStopwords()
     lyrics_tokens <- ProcessLyrics(lyricsData, stopwords)
     
     if (!is.null(commentsData) && nrow(commentsData) > 0) {
-        cat("Processing comments text...\n")
+        cat("Processing comments text... so many misspellings\n")
         comment_tokens <- ProcessComments(commentsData, stopwords)
     } else {
         comment_tokens <- NULL
     }
     
     # Step 6: Extract key words by genre
-    cat("Calculating TF-IDF by genre...\n")
+    cat("Calculating TF-IDF by genre... the fun part begins\n")
     genre_tf_idf <- CalculateGenreTFIDF(lyrics_tokens)
     
     # Step 7: Extract n-grams (this is optional, may not use depend on time)
-    cat("Extracting bigrams from lyrics...\n")
+    cat("Extracting bigrams from lyrics... two words are better than one\n")
     lyrics_bigrams <- ExtractNgrams(lyricsData, n = 2, stopwords)
     
     # Step 8: Perform sentiment analysis
-    cat("Analyzing lyrics sentiment...\n")
+    cat("Analyzing lyrics sentiment... are these songs depressing?\n")
     lyrics_sentiment <- AnalyzeLyricsSentiment(lyrics_tokens)
     
     if (!is.null(comment_tokens) && nrow(comment_tokens) > 0) {
-        cat("Analyzing comments sentiment...\n")
+        cat("Analyzing comments sentiment... YouTube comments, god help us\n")
         comments_sentiment <- AnalyzeCommentsSentiment(comment_tokens)
     } else {
         comments_sentiment <- NULL
     }
     
     # Step 9: Compare sentiment across genres
-    cat("Comparing sentiment across genres...\n")
+    cat("Comparing sentiment across genres... which genre is the most depressing?\n")
     genre_sentiment <- CompareSentimentByGenre(lyrics_sentiment)
     
     # Step 10: Compare lyrics and comments sentiment
     if (!is.null(comments_sentiment)) {
-        cat("Comparing lyrics and comments sentiment...\n")
+        cat("Comparing lyrics and comments sentiment... do listeners feel what artists intended?\n")
         lyrics_comments_comparison <- CompareLyricsAndComments(lyrics_sentiment, comments_sentiment)
     } else {
         lyrics_comments_comparison <- NULL
     }
     
     # Step 11: Generate visualizations
-    cat("Generating visualizations...\n")
+    cat("Generating visualizations... make this shit look pretty\n")
     
     # Word clouds by genre
     CreateGenreWordClouds(lyrics_tokens)
@@ -133,7 +133,13 @@ if (nrow(lyricsData) > 0 && any(lyricsData$LyricsStatus == "found")) {
     # emotion radar charts for genres
     CreateEmotionRadarChart(lyrics_sentiment)
     
-    cat("Analysis complete!\n")
+    # NEW: Create emotional impact chart
+    if (!is.null(comments_sentiment)) {
+        cat("Creating emotional impact chart... see how music affects listeners\n")
+        CreateEmotionalImpactChart(lyrics_sentiment, comments_sentiment)
+    }
+    
+    cat("Analysis complete! That wasn't so bad, was it?\n")
     
     # Step 12: Generate report
     # cat("Generating final report...\n")
@@ -141,5 +147,5 @@ if (nrow(lyricsData) > 0 && any(lyricsData$LyricsStatus == "found")) {
     # GenerateReport()
     
 } else {
-    stop("No lyrics were found. Cannot continue with analysis.")
+    stop("No lyrics were found. Cannot continue with analysis. We're completely screwed.")
 }

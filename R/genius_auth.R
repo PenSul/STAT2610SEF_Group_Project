@@ -1,5 +1,5 @@
 # STAT2610SEF_Group_Project/R/genius_auth.R
-# Genius API authentication function
+# Genius API authentication function - oh boy, another API to fight with
 
 
 #' Operator for providing default values for NULL
@@ -62,7 +62,7 @@ genius_get <- function(endpoint, token, ...) {
     if (http_error(response)) {
         stop(
             "Genius API request failed [", status_code(response), "]\n", 
-            content(response, "text", encoding = "UTF-8")
+            content(response, "text", encoding = "UTF-8"), " - Fucking Genius API!"
         )
     }
     

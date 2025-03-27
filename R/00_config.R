@@ -1,34 +1,34 @@
 # STAT2610SEF_Group_Project/R/00_config.R
-# Configuration file
+# Configuration file - where all the boring shit goes
 
 
-# API credentials
+# API credentials - don't leak these or we're screwed
 API_CREDENTIALS <- list(
     genius = list(
-        # Fill in genius API
-        client_id = "", 
-        client_secret = "",
+        # Fill in genius API - get your own if this one's dead
+        client_id = "BhxwRG6hXz6QpkCeh223fFQpe3QuG2aNAkhBc--uZMDED8THzzn9ojKxU4iQL1R3", 
+        client_secret = "S-X2LlkbEdoYbdwPHvXoQ_8LSoiwmF-9bGqY3NaC-NvzbjuH9Kpo6JjClU8vIjigQeJ04qd5iZdzLXIv2eOoZA",
         redirect_uri = "http://localhost:1410/"
     ),
     youtube = list(
-        # Fill in Google Cloud API
+        # Fill in Google Cloud API - pray they don't rate-limit us
         app_name = "STAT2610SEF-YouTube-Client",
-        client_id = "",
-        client_secret = "",
-        api_key = ""
+        client_id = "546617841768-fs72fvg6f4jpgirtih1htnfoisj9iium.apps.googleusercontent.com",
+        client_secret = "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",
+        api_key = "AIzaSyBo8sZOMHbToIFBe9CL1TNUQug3khvzPlM"
     )
 )
 
-# Project settings
+# Project settings - tweak at your own risk
 PROJECT_SETTINGS <- list(
     csv_file_path = "song_list.csv",
-    max_comments = 100,               # Maximum number of comments to collect per song
+    max_comments = 100,               # Max comments per song
     sentiment_lexicon = "bing",
     min_word_freq = 3,                # Minimum word frequency for word clouds
-    max_words = 100                   # Maximum number of words in word clouds
+    max_words = 100                   # Maximum number of words in word clouds - keep it sane
 )
 
-# Define global file paths
+# Define global file paths - where all the crap gets saved
 BASE_DIR <- "."
 DATA_DIR <- file.path(BASE_DIR, "Data")
 LYRICS_DIR <- file.path(DATA_DIR, "Lyrics")
@@ -36,7 +36,7 @@ COMMENTS_DIR <- file.path(DATA_DIR, "Comments")
 OUTPUT_DIR <- file.path(DATA_DIR, "Output")
 VISUALS_DIR <- file.path(BASE_DIR, "Visualizations")
 
-# Emotion categories and colors for visualization
+# Emotion categories and colors for visualization - make it pretty
 EMOTION_COLORS <- list(
     joy = "#FFD700",
     trust = "#32CD32",
@@ -72,7 +72,7 @@ GENRE_COLORS <- list(
     "Other" = "#9E9E9E"
 )
 
-# StopWords to exclude from text analysis
+# StopWords to exclude from text analysis - all the crap we don't care about
 CUSTOM_STOPWORDS <- c(
     "feat", "ft", "chorus", "verse", "bridge", "intro", "outro", "pre-chorus",
     "hook", "refrain", "interlude", "remix", "edit", "version", "remaster",

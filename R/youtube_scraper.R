@@ -15,7 +15,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) { # Ne
     api_key <- API_CREDENTIALS$youtube$api_key
     
     if (is.null(api_key) || api_key == "") {
-        stop("YouTube API key not found")
+        stop("YouTube API key not found. We're screwed.")
     }
     
     # Create dataframe to store comments
@@ -51,7 +51,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) { # Ne
         video_id <- extractYouTubeID(songData$SongLink[i])
         
         if (is.na(video_id)) {
-            cat(sprintf("Skipping song %d: No valid YouTube URL\n", i))
+            cat(sprintf("Skipping song %d: No valid YouTube URL. Meh, whatever.\n", i))
             next
         }
         
@@ -112,7 +112,7 @@ CollectYouTubeCommentsWithAPIKey <- function(songData, max_results = 100) { # Ne
                 cat(sprintf("  Saved %d comments for video %s\n", 
                             nrow(video_comments), video_id))
             } else {
-                cat(sprintf("  No comments found for video %s\n", video_id))
+                cat(sprintf("  No comments found for video %s. Boring video?\n", video_id))
             }
             
         }, error = function(e) {
