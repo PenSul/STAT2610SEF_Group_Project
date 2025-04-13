@@ -6,16 +6,16 @@
 API_CREDENTIALS <- list(
     genius = list(
         # Fill in genius API - get your own if this one's dead
-        client_id = "BhxwRG6hXz6QpkCeh223fFQpe3QuG2aNAkhBc--uZMDED8THzzn9ojKxU4iQL1R3", 
-        client_secret = "S-X2LlkbEdoYbdwPHvXoQ_8LSoiwmF-9bGqY3NaC-NvzbjuH9Kpo6JjClU8vIjigQeJ04qd5iZdzLXIv2eOoZA",
-        redirect_uri = "http://localhost:1410/"
+        client_id = "", 
+        client_secret = "",
+        redirect_uri = ""
     ),
     youtube = list(
         # Fill in Google Cloud API - pray they don't rate-limit us
         app_name = "STAT2610SEF-YouTube-Client",
-        client_id = "546617841768-fs72fvg6f4jpgirtih1htnfoisj9iium.apps.googleusercontent.com",
-        client_secret = "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",
-        api_key = "AIzaSyBo8sZOMHbToIFBe9CL1TNUQug3khvzPlM"
+        client_id = "",
+        client_secret = "",
+        api_key = ""
     )
 )
 
