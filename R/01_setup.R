@@ -56,7 +56,7 @@ CheckAndInstallPackages <- function() {
         "tidyverse", "tidytext", "tuber", "rvest", "httr", "jsonlite",
         "textdata", "sentimentr", "wordcloud", "plotly", "knitr",
         "rmarkdown", "dplyr", "stringr", "ggplot2", "scales",
-        "ggrepel", "htmlwidgets", "RColorBrewer"
+        "ggrepel", "htmlwidgets", "RColorBrewer", "reticulate"
     )
     
     # Check and install missing packages
