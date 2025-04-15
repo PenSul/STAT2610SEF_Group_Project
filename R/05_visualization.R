@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/05_visualization.R
 # Visualization functions - make this shit look pretty!
 
 

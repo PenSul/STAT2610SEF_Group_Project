@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/04_sentiment_analysis.R
 # Sentiment analysis functions - where the magic happens
 
 

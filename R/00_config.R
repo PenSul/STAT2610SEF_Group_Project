@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/00_config.R
 # Configuration file - where all the boring shit goes
 
 
@@ -12,7 +11,7 @@ API_CREDENTIALS <- list(
     ),
     youtube = list(
         # Fill in Google Cloud API - pray they don't rate-limit us
-        app_name = "STAT2610SEF-YouTube-Client",
+        app_name = "",
         client_id = "",
         client_secret = "",
         api_key = ""

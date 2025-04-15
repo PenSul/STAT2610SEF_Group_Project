@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/lyrics_scraper.R
 # Direct lyrics scraping function using Genius search
 
 

@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/02_data_collection.R
 # Data collection functions - where we beg APIs for data
 
 

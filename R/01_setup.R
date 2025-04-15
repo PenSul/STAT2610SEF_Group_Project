@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/01_setup.R
 # Setup functions - boring but necessary shit
 
 

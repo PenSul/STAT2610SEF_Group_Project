@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/main.R
 # Main script - where the magic happens
 
 

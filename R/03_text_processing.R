@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/03_text_processing.R
 # Text processing functions - where we clean up this mess
 
 

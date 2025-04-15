@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/genius_auth.R
 # Genius API authentication function - oh boy, another API to fight with
 
 

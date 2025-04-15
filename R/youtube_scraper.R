@@ -1,4 +1,3 @@
-# STAT2610SEF_Group_Project/R/youtube_scraper.R
 # YouTube comment collection using API key directly
 
 
